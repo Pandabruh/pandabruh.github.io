@@ -17,17 +17,17 @@
 
 <!-- HERO -->
 <section class="hero">
-    <h1>Hi, I'm <span>PandaBruh</span></h1>
-    <p>Robotics • Engineering • Autonomous Systems • Competitive Robotics</p>
-    <a href="#projects" class="btn">Explore My Work</a>
+    <h1 id="typing"></h1>
+    <p class="fade">Robotics • Engineering • Autonomous Systems • Competitive Robotics</p>
+    <a href="#projects" class="btn fade">Explore My Work</a>
 </section>
 
 <!-- ABOUT -->
-<section id="about" class="section">
+<section id="about" class="section fade">
     <h2>About Me</h2>
     <p>
-        I am a robotics engineer who builds drones, robots, and autonomous systems.
-        Passionate about engineering, competitive robotics, and solving real-world problems.
+        I am a robotics engineer who builds drones, robots, and autonomous autonomous systems.
+        Passionate about hardware, competitive robotics, and solving real-world problems.
     </p>
 </section>
 
@@ -35,11 +35,11 @@
 <section id="projects" class="section">
     <h2>Projects</h2>
 
-    <div class="projects-grid">
+    <div class="projects-grid fade">
 
         <a href="projects/drone.html" class="project-card">
             <h3>Drone Project</h3>
-            <p>Custom-designed autonomous quadcopter project.</p>
+            <p>Custom-designed autonomous quadcopter system.</p>
         </a>
 
         <a href="projects/fgc2024.html" class="project-card">
@@ -47,26 +47,20 @@
             <p>🏆 World Champion — Athens, Greece</p>
         </a>
 
-        <a href="projects/vex2023.html" class="project-card">
-            <h3>VEX Worlds 2023</h3>
-            <p>Middle School Division Finalist</p>
-        </a>
-
-        <a href="projects/vex2024.html" class="project-card">
-            <h3>VEX Worlds 2024</h3>
-            <p>High School Semifinalist</p>
-        </a>
-
-        <a href="projects/vex2025.html" class="project-card">
-            <h3>VEX Worlds 2025</h3>
-            <p>High School Round of 16</p>
+        <a href="projects/vex/index.html" class="project-card">
+            <h3>VEX Robotics (2022–2025)</h3>
+            <p>My full competitive robotics journey.</p>
         </a>
 
     </div>
 </section>
 
-<!-- THEME SCRIPT -->
+<!-- BACK TO TOP -->
+<button id="topBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+
+<!-- SCRIPT -->
 <script>
+/* Theme Toggle */
 function toggleTheme() {
     const body = document.body;
     const newTheme = body.dataset.theme === "light" ? "dark" : "light";
@@ -78,6 +72,33 @@ function toggleTheme() {
     const saved = localStorage.getItem("theme");
     document.body.dataset.theme = saved || "dark";
 })();
+
+/* Typing Animation */
+const text = "Hi, I'm PandaBruh";
+let i = 0;
+function type() {
+    if (i < text.length) {
+        document.getElementById("typing").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(type, 60);
+    }
+}
+type();
+
+/* Fade In Animations */
+const faders = document.querySelectorAll('.fade');
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+});
+faders.forEach(el => observer.observe(el));
+
+/* Back to Top button */
+const topBtn = document.getElementById("topBtn");
+window.onscroll = () => {
+    topBtn.style.display = window.scrollY > 500 ? "block" : "none";
+};
 </script>
 
 </body>
