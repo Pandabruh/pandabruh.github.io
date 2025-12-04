@@ -4,117 +4,80 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PandaBruh | Portfolio</title>
-    <link rel="stylesheet" href="style.css?v=2" />
-
-    <!-- Prevent caching -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="logo">PandaBruh</div>
-        <div class="theme-toggle" onclick="toggleTheme()">🌗</div>
-    </nav>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="index.html" class="logo">PandaBruh</a>
+    <div class="theme-toggle" onclick="toggleTheme()">☀️/🌙</div>
+</nav>
 
-    <!-- HERO -->
-    <section class="hero">
-        <h1>Hi, I'm <span>PandaBruh</span></h1>
-        <p>Robotics • Engineering • Autonomous Systems • Competitive Robotics</p>
-        <a href="#projects" class="btn">Explore My Work</a>
-    </section>
+<!-- HERO -->
+<section class="hero">
+    <h1>Hi, I'm <span>PandaBruh</span></h1>
+    <p>Robotics • Engineering • Autonomous Systems • Competitive Robotics</p>
+    <a href="#projects" class="btn">Explore My Work</a>
+</section>
 
-    <!-- ABOUT -->
-    <section id="about" class="section">
-        <h2>About Me</h2>
-        <p>
-            I am a robotics engineer who builds drones, robots, and autonomous systems.
-            Passionate about hardware, competitive engineering, and solving real-world problems.
-        </p>
-    </section>
+<!-- ABOUT -->
+<section id="about" class="section">
+    <h2>About Me</h2>
+    <p>
+        I am a robotics engineer who builds drones, robots, and autonomous systems.
+        Passionate about engineering, competitive robotics, and solving real-world problems.
+    </p>
+</section>
 
-    <!-- PROJECTS -->
-    <section id="projects" class="section">
-        <h2>Projects</h2>
+<!-- PROJECTS -->
+<section id="projects" class="section">
+    <h2>Projects</h2>
 
-        <div class="card-grid">
+    <div class="projects-grid">
 
-            <!-- DRONE -->
-            <div class="card project-card" onclick="toggleProject('drone')">
-                <h3>Drone Project</h3>
-                <p>Custom PCB + autonomous flight system.</p>
-            </div>
-            <div id="drone" class="project-details">
-                <p>
-                    • Fully custom PCB designed from scratch (flight controller + IMU module)<br>
-                    • Designed, soldered, assembled independently<br>
-                    • Firmware work in progress for real autonomous flight<br>
-                    • Logs and debugging tools included in design<br>
-                </p>
-            </div>
+        <a href="projects/drone.html" class="project-card">
+            <h3>Drone Project</h3>
+            <p>Custom-designed autonomous quadcopter project.</p>
+        </a>
 
-            <!-- VEX PROJECT -->
-            <div class="card project-card" onclick="toggleProject('vex')">
-                <h3>VEX Robotics</h3>
-                <p>Path planning, autonomous code, and mechanisms.</p>
-            </div>
-            <div id="vex" class="project-details">
-                <p>
-                    • C++ autonomous path planning for VEX robots<br>
-                    • Full routine optimization for Worlds divisions<br>
-                    • PID tuning, odometry, and motion profiling<br>
-                </p>
-            </div>
+        <a href="projects/fgc2024.html" class="project-card">
+            <h3>First Global Challenge 2024</h3>
+            <p>🏆 World Champion — Athens, Greece</p>
+        </a>
 
-            <!-- FGC -->
-            <div class="card project-card" onclick="toggleProject('fgc')">
-                <h3>First Global Challenge 2024</h3>
-                <p>Robot design + strategy for Team Singapore.</p>
-            </div>
-            <div id="fgc" class="project-details">
-                <p>
-                    • Represented Singapore in Athens 2024<br>
-                    • Won 3rd place overall out of >190 countries<br>
-                    • Designed competitive manipulator + drivetrain system<br>
-                </p>
-            </div>
+        <a href="projects/vex2023.html" class="project-card">
+            <h3>VEX Worlds 2023</h3>
+            <p>Middle School Division Finalist</p>
+        </a>
 
-        </div>
-    </section>
+        <a href="projects/vex2024.html" class="project-card">
+            <h3>VEX Worlds 2024</h3>
+            <p>High School Semifinalist</p>
+        </a>
 
-    <!-- ACHIEVEMENTS -->
-    <section id="achievements" class="section">
-        <h2>Achievements</h2>
-        <ul class="achievements">
-            <li>🥉 3rd Place — **FIRST Global Challenge 2024**, Athens</li>
-            <li>VEX Worlds 2023 — Middle School Division Finalist</li>
-            <li>VEX Worlds 2024 — High School Division Semifinalist</li>
-            <li>VEX Worlds 2025 — High School Round of 16</li>
-        </ul>
-    </section>
+        <a href="projects/vex2025.html" class="project-card">
+            <h3>VEX Worlds 2025</h3>
+            <p>High School Round of 16</p>
+        </a>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-        <h2>Contact</h2>
-        <p>Email: <b>your.email@example.com</b></p>
-    </section>
+    </div>
+</section>
 
-    <footer>
-        © 2025 PandaBruh
-    </footer>
-
+<!-- THEME SCRIPT -->
 <script>
 function toggleTheme() {
-    document.body.classList.toggle("light");
+    const body = document.body;
+    const newTheme = body.dataset.theme === "light" ? "dark" : "light";
+    body.dataset.theme = newTheme;
+    localStorage.setItem("theme", newTheme);
 }
 
-function toggleProject(id) {
-    const section = document.getElementById(id);
-    section.classList.toggle("open");
-}
+(function() {
+    const saved = localStorage.getItem("theme");
+    document.body.dataset.theme = saved || "dark";
+})();
 </script>
 
 </body>
