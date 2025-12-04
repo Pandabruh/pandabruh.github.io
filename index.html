@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PandaBruh | Portfolio</title>
+    <title>PandaBruh</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
+<body data-theme="dark">
 
 <!-- NAVBAR -->
 <nav class="navbar">
@@ -26,7 +26,7 @@
 <section id="about" class="section fade">
     <h2>About Me</h2>
     <p>
-        I am a robotics engineer who builds drones, robots, and autonomous autonomous systems.
+        I am a robotics engineer who builds drones, robots, and autonomous systems.
         Passionate about hardware, competitive robotics, and solving real-world problems.
     </p>
 </section>
@@ -68,9 +68,10 @@ function toggleTheme() {
     localStorage.setItem("theme", newTheme);
 }
 
+/* Load saved theme */
 (function() {
     const saved = localStorage.getItem("theme");
-    document.body.dataset.theme = saved || "dark";
+    if(saved) document.body.dataset.theme = saved;
 })();
 
 /* Typing Animation */
@@ -96,9 +97,7 @@ faders.forEach(el => observer.observe(el));
 
 /* Back to Top button */
 const topBtn = document.getElementById("topBtn");
-window.onscroll = () => {
-    topBtn.style.display = window.scrollY > 500 ? "block" : "none";
-};
+window.onscroll = () => { topBtn.style.display = window.scrollY > 500 ? "block" : "none"; };
 </script>
 
 </body>
