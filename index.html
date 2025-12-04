@@ -4,8 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PandaBruh | Portfolio</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=2" />
+
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 </head>
+
 <body>
 
     <!-- NAVBAR -->
@@ -17,7 +23,7 @@
     <!-- HERO -->
     <section class="hero">
         <h1>Hi, I'm <span>PandaBruh</span></h1>
-        <p>Robotics • AI • Engineering • Autonomous Systems</p>
+        <p>Robotics • Engineering • Autonomous Systems • Competitive Robotics</p>
         <a href="#projects" class="btn">Explore My Work</a>
     </section>
 
@@ -25,8 +31,8 @@
     <section id="about" class="section">
         <h2>About Me</h2>
         <p>
-            I build drones, robots, and intelligent systems.  
-            Passionate about solving real-world problems through engineering and AI.
+            I am a robotics engineer who builds drones, robots, and autonomous systems.
+            Passionate about hardware, competitive engineering, and solving real-world problems.
         </p>
     </section>
 
@@ -36,19 +42,44 @@
 
         <div class="card-grid">
 
-            <div class="card">
+            <!-- DRONE -->
+            <div class="card project-card" onclick="toggleProject('drone')">
                 <h3>Drone Project</h3>
-                <p>Custom PCB + autonomous flight system for a fully custom-built drone.</p>
+                <p>Custom PCB + autonomous flight system.</p>
+            </div>
+            <div id="drone" class="project-details">
+                <p>
+                    • Fully custom PCB designed from scratch (flight controller + IMU module)<br>
+                    • Designed, soldered, assembled independently<br>
+                    • Firmware work in progress for real autonomous flight<br>
+                    • Logs and debugging tools included in design<br>
+                </p>
             </div>
 
-            <div class="card">
-                <h3>Smart City Robot</h3>
-                <p>AI robot built for Singapore Smart Nation competitions.</p>
+            <!-- VEX PROJECT -->
+            <div class="card project-card" onclick="toggleProject('vex')">
+                <h3>VEX Robotics</h3>
+                <p>Path planning, autonomous code, and mechanisms.</p>
+            </div>
+            <div id="vex" class="project-details">
+                <p>
+                    • C++ autonomous path planning for VEX robots<br>
+                    • Full routine optimization for Worlds divisions<br>
+                    • PID tuning, odometry, and motion profiling<br>
+                </p>
             </div>
 
-            <div class="card">
-                <h3>VEX Path Planning</h3>
-                <p>Fully autonomous path programming in C++ for competition robots.</p>
+            <!-- FGC -->
+            <div class="card project-card" onclick="toggleProject('fgc')">
+                <h3>First Global Challenge 2024</h3>
+                <p>Robot design + strategy for Team Singapore.</p>
+            </div>
+            <div id="fgc" class="project-details">
+                <p>
+                    • Represented Singapore in Athens 2024<br>
+                    • Won 3rd place overall out of >190 countries<br>
+                    • Designed competitive manipulator + drivetrain system<br>
+                </p>
             </div>
 
         </div>
@@ -58,10 +89,10 @@
     <section id="achievements" class="section">
         <h2>Achievements</h2>
         <ul class="achievements">
-            <li>SSEF 2025 — Silver</li>
-            <li>SUTD Research & Innovation Award 2025</li>
-            <li>VEX Worlds 2022–2025</li>
-            <li>WRO 2021–2022</li>
+            <li>🥉 3rd Place — **FIRST Global Challenge 2024**, Athens</li>
+            <li>VEX Worlds 2023 — Middle School Division Finalist</li>
+            <li>VEX Worlds 2024 — High School Division Semifinalist</li>
+            <li>VEX Worlds 2025 — High School Round of 16</li>
         </ul>
     </section>
 
@@ -78,6 +109,11 @@
 <script>
 function toggleTheme() {
     document.body.classList.toggle("light");
+}
+
+function toggleProject(id) {
+    const section = document.getElementById(id);
+    section.classList.toggle("open");
 }
 </script>
 
