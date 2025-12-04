@@ -1,0 +1,115 @@
+/* ===== GLOBAL ===== */
+:root {
+    --bg: #0d0d0d;
+    --text: white;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --accent: #00eaff;
+}
+
+body.light {
+    --bg: white;
+    --text: #111;
+    --card-bg: rgba(0,0,0,0.06);
+    --accent: #0077ff;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", Arial, sans-serif;
+    transition: 0.3s;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    padding: 20px 7%;
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg);
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.4rem;
+}
+
+/* ===== HERO ===== */
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero span {
+    color: var(--accent);
+}
+
+.btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: var(--accent);
+    color: black;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* ===== SECTIONS ===== */
+.section {
+    padding: 80px 10%;
+    text-align: center;
+}
+
+/* ===== CARDS ===== */
+.card-grid {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.card {
+    padding: 25px;
+    border-radius: 15px;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
+    transform: translateY(0);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+}
+
+/* ===== ACHIEVEMENTS ===== */
+.achievements {
+    list-style: none;
+    padding: 0;
+    line-height: 2rem;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    text-align: center;
+    padding: 30px;
+    opacity: 0.6;
+}
