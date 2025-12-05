@@ -1,37 +1,29 @@
-/* =========================================================
-   GLOBAL VARIABLES
-   ========================================================= */
+/* -------------------------------
+   THEME VARIABLES
+--------------------------------*/
 :root {
-    --bg: #0c0c0c;
-    --text: #e5e5e5;
+    --bg: #0d0d0f;
+    --text: #e7e7e7;
+    --card: #161618;
     --accent: #00aaff;
-    --glow: rgba(0, 170, 255, 0.6);
-    --card: #161616;
-    --card-border: rgba(255, 255, 255, 0.05);
-    --card-shadow: 0 0 20px rgba(0, 170, 255, 0.1);
-    --nav-bg: rgba(0, 0, 0, 0.4);
-    --hero-bg: linear-gradient(145deg, #000, #0a0f16);
+    --glow: rgba(0, 170, 255, 0.45);
+    --nav-bg: rgba(0,0,0,0.45);
 }
 
-/* LIGHT MODE OVERRIDES */
 body[data-theme="light"] {
-    --bg: #f7f7f9;
+    --bg: #fafafa;
     --text: #111;
-    --accent: #0078ff;
-    --glow: rgba(0, 120, 255, 0.4);
     --card: #ffffff;
-    --card-border: rgba(0, 0, 0, 0.07);
-    --card-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-    --nav-bg: rgba(255, 255, 255, 0.6);
-    --hero-bg: linear-gradient(145deg, #ffffff, #e4e8f0);
+    --accent: #007bff;
+    --glow: rgba(0, 120, 255, 0.25);
+    --nav-bg: rgba(255,255,255,0.6);
 }
 
-/* =========================================================
+/* -------------------------------
    BASE
-   ========================================================= */
+--------------------------------*/
 body {
     margin: 0;
-    padding: 0;
     background: var(--bg);
     color: var(--text);
     font-family: "Inter", sans-serif;
@@ -40,124 +32,127 @@ body {
 
 h1, h2, h3 {
     color: var(--accent);
-    text-shadow: 0 0 12px var(--glow);
 }
 
-/* =========================================================
+/* -------------------------------
    NAVBAR
-   ========================================================= */
+--------------------------------*/
 nav {
     position: fixed;
     top: 0;
     width: 100%;
     height: 60px;
+    backdrop-filter: blur(10px);
     background: var(--nav-bg);
-    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     padding: 0 30px;
     z-index: 10;
-    border-bottom: 1px solid var(--card-border);
 }
 
 .logo {
     font-size: 22px;
-    font-weight: 700;
+    font-weight: bold;
     cursor: pointer;
 }
 
 .theme-toggle {
-    cursor: pointer;
     font-size: 20px;
+    cursor: pointer;
+    padding-right: 10px;
 }
 
-/* =========================================================
-   HERO SECTION
-   ========================================================= */
+/* -------------------------------
+   HERO
+--------------------------------*/
 .hero {
     height: 60vh;
+    margin-top: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: var(--hero-bg);
-    margin-top: 60px;
     text-align: center;
 }
 
-.hero h1 {
-    font-size: 40px;
-    margin-bottom: 10px;
+.hero .highlight {
+    text-shadow: 0 0 12px var(--glow);
 }
 
-.hero p {
-    opacity: 0.8;
-}
-
-/* Hero Button */
 .btn {
     margin-top: 20px;
     padding: 12px 28px;
     background: var(--accent);
-    color: white;
     border: none;
     border-radius: 10px;
     font-size: 16px;
+    color: white;
     cursor: pointer;
-    box-shadow: 0 0 14px var(--glow);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s;
 }
 
 .btn:hover {
     transform: scale(1.06);
 }
 
-/* =========================================================
+/* -------------------------------
    SECTIONS
-   ========================================================= */
+--------------------------------*/
 .section {
-    padding: 80px 12%;
+    padding: 70px 12%;
 }
 
-.section h2 {
-    margin-bottom: 20px;
+/* -------------------------------
+   VERTICAL PROJECT BARS
+--------------------------------*/
+.project-vertical-container {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
 }
 
-/* =========================================================
-   PROJECT CARDS
-   ========================================================= */
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 26px;
-    margin-top: 30px;
-}
-
-.project-card {
+.project-bar {
     background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 15px;
     padding: 22px;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    transition: 0.25s ease;
 }
 
-.project-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 0 25px var(--glow);
+.project-bar:hover {
+    box-shadow: 0 0 22px var(--glow);
+    transform: translateY(-4px);
 }
 
-.project-card h3 {
-    margin-top: 0;
+.project-bar button {
+    padding: 10px 22px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
-/* =========================================================
+.project-bar button:hover {
+    transform: scale(1.05);
+}
+
+/* -------------------------------
    FOOTER
-   ========================================================= */
+--------------------------------*/
 footer {
     text-align: center;
     padding: 20px;
     opacity: 0.6;
-    margin-top: 80px;
 }
