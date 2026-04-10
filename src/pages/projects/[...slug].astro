@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro'
-import { type CollectionPosts } from '@/types'
-import { getPosts } from '@/utils/posts'
+import type { CollectionPosts } from '@/types'
 import TableOfContents from '@/components/TableOfContents.vue'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { getPosts } from '@/utils/posts'
 
 export async function getStaticPaths() {
   const posts = await getPosts(undefined, 'projects')
@@ -40,7 +40,13 @@ function getDate(date: string) {
     {
       image && (
         <p style="margin: 1rem 0;">
-          <img width="640" height="360" src={image.src} alt={image.alt || ''} style="max-width: 100%; height: auto; display: block;" />
+          <img
+            width="640"
+            height="360"
+            src={image.src}
+            alt={image.alt || ''}
+            style="max-width: 100%; height: auto; display: block;"
+          />
         </p>
       )
     }

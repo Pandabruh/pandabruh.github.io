@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 interface Heading {
   id: string
@@ -13,18 +13,23 @@ const activeId = ref('')
 onMounted(() => {
   // Get all h2 headings from the article
   const article = document.querySelector('article')
-  if (!article) return
+  if (!article) 
+    return
 
   const h2Elements = article.querySelectorAll('h2')
   headings.value = Array.from(h2Elements).map((h2) => {
     // Create id if it doesn't exist
     if (!h2.id) {
-      h2.id = h2.textContent?.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') || ''
+      h2.id
+        = h2.textContent
+          ?.toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]/g, '') || ''
     }
     return {
       id: h2.id,
       text: h2.textContent || '',
-      level: 2
+      level: 2,
     }
   })
 
@@ -43,7 +48,7 @@ function updateActiveSection() {
   for (let i = headings.value.length - 1; i >= 0; i--) {
     const heading = headings.value[i]
     const element = document.getElementById(heading.id)
-    
+
     if (element && element.offsetTop <= scrollPosition) {
       activeId.value = heading.id
       break
@@ -60,18 +65,15 @@ function scrollToSection(id: string) {
 </script>
 
 <template>
-  <nav 
-    v-if="headings.length > 0"
-    class="toc-sidebar"
-  >
-    <div 
-      v-for="heading in headings" 
+  <nav v-if="headings.length > 0" class="toc-sidebar">
+    <div
+      v-for="heading in headings"
       :key="heading.id"
       class="toc-item"
       :class="{ active: activeId === heading.id }"
       @click="scrollToSection(heading.id)"
     >
-      <div class="toc-line"></div>
+      <div class="toc-line" />
       <span class="toc-text">{{ heading.text }}</span>
     </div>
   </nav>

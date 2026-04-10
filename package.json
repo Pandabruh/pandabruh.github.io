@@ -51,11 +51,9 @@
     "eslint-plugin-format": "^1.0.1",
     "lint-staged": "^15.5.1",
     "lodash-es": "^4.17.21",
+    "prettier": "^3.8.2",
     "prettier-plugin-astro": "^0.14.1",
     "simple-git-hooks": "^2.12.1"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
     "*": "npm run lint:fix"

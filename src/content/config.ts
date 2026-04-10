@@ -27,11 +27,13 @@ const projects = defineCollection({
     date: z
       .string()
       .or(z.date())
-      .transform((val: string | number | Date) => new Date(val).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })),
+      .transform((val: string | number | Date) =>
+        new Date(val).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }),
+      ),
     draft: z.boolean().default(false).optional(),
     lang: z.string().default('en-US').optional(),
     tag: z.string().optional().optional(),
@@ -54,11 +56,13 @@ const nerdstuff = defineCollection({
     date: z
       .string()
       .or(z.date())
-      .transform((val: string | number | Date) => new Date(val).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })),
+      .transform((val: string | number | Date) =>
+        new Date(val).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }),
+      ),
     draft: z.boolean().default(false).optional(),
     lang: z.string().default('en-US').optional(),
     tag: z.string().optional().optional(),

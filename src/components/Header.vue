@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import siteConfig from '@/site-config'
-import { getLinkTarget } from '@/utils/link'
 import { useWindowScroll } from '@vueuse/core'
 import { computed, onMounted, ref, unref } from 'vue'
+import siteConfig from '@/site-config'
+import { getLinkTarget } from '@/utils/link'
 import ThemeToggle from './ThemeToggle.vue'
 
 const navLinks = siteConfig.header.navLinks || []
 
 const socialLinks = computed(() => {
   return siteConfig.socialLinks.filter((link: Record<string, any>) => {
-    if (link.header && typeof link.header === 'boolean') return link
+    if (link.header && typeof link.header === 'boolean') 
+      return link
     if (link.header && typeof link.header === 'string') {
       link.icon = link.header.includes('i-') ? link.header : link.icon
       return link
@@ -23,7 +24,8 @@ const oldScroll = ref(unref(scroll))
 
 onMounted(() => {
   const headerEl = document.querySelector('#header') as HTMLElement
-  if (!headerEl) return
+  if (!headerEl) 
+    return
 
   if (document.documentElement.scrollTop > 100)
     headerEl.classList.add('header-bg-blur')
@@ -88,7 +90,13 @@ onMounted(() => {
         :target="getLinkTarget(link.href)"
         :href="link.href"
       />
-      <a nav-link target="_blank" href="/rss.xml" i-ri-rss-line aria-label="RSS" />
+      <a
+        nav-link
+        target="_blank"
+        href="/rss.xml"
+        i-ri-rss-line
+        aria-label="RSS"
+      />
       <ThemeToggle />
     </div>
   </header>

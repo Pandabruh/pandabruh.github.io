@@ -7,14 +7,12 @@ html.dark .astro-code span {
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
-
 /* Force scrollbar and prevent horizontal overflow */
 html {
   overflow-y: scroll;
   width: 100vw;
   overflow-x: hidden;
   overscroll-behavior: none;
-
 }
 
 /* Prevent layout shift from content loading */
@@ -44,9 +42,10 @@ html:not(.dark) {
 
 /* Enable transitions ONLY for theme toggle after page is ready */
 html.transition-ready * {
-  transition: color 200ms ease-in-out, 
-              background-color 200ms ease-in-out, 
-              border-color 200ms ease-in-out !important;
+  transition:
+    color 200ms ease-in-out,
+    background-color 200ms ease-in-out,
+    border-color 200ms ease-in-out !important;
 }
 
 #nprogress {
@@ -128,14 +127,14 @@ pre code {
 }
 
 .sidetoside {
-  display: flex; 
-  gap: 10px; 
-  flex-wrap: wrap; 
-  justify-content: center; 
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-top: -30px;
 }
 
 .singleimg {
   margin-top: -10px;
-  justify-content: center; 
+  justify-content: center;
 }

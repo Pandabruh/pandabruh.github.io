@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const isDark = ref(false)
 
@@ -8,24 +8,25 @@ onMounted(() => {
   // Initialize theme from localStorage
   const saved = localStorage.getItem('vueuse-color-scheme')
   isDark.value = saved === 'dark'
-  
+
   // Apply initial theme
   applyTheme()
-  
+
   // Listen for Astro page changes
   document.addEventListener('astro:before-swap', (event) => {
     const saved = localStorage.getItem('vueuse-color-scheme')
     const dark = saved === 'dark'
-    
+
     if (dark) {
       event.newDocument.documentElement.classList.add('dark')
       event.newDocument.documentElement.style.colorScheme = 'dark'
-    } else {
+    }
+    else {
       event.newDocument.documentElement.classList.remove('dark')
       event.newDocument.documentElement.style.colorScheme = 'light'
     }
   })
-  
+
   document.addEventListener('astro:after-swap', () => {
     applyTheme()
   })
@@ -40,7 +41,8 @@ function applyTheme() {
   if (isDark.value) {
     document.documentElement.classList.add('dark')
     document.documentElement.style.colorScheme = 'dark'
-  } else {
+  }
+  else {
     document.documentElement.classList.remove('dark')
     document.documentElement.style.colorScheme = 'light'
   }
@@ -52,10 +54,10 @@ function toggleTheme() {
 </script>
 
 <template>
-  <button 
-    :aria-label="isDark ? 'Dark Theme' : 'Light Theme'" 
-    nav-link 
+  <button
+    :aria-label="isDark ? 'Dark Theme' : 'Light Theme'"
+    nav-link
     :class="isDark ? 'i-ri-moon-line' : 'i-ri-sun-line'"
-    @click="toggleTheme" 
+    @click="toggleTheme"
   />
 </template>
