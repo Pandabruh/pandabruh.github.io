@@ -1,26 +1,21 @@
 export const siteConfig = {
-  author: 'Kieran Wang',
-  title: 'Vitesse theme for Astro',
-  subtitle: 'Vitesse theme for Astro, supports Vue and UnoCSS.',
-  description: 'A Minimal, SEO-friendly portfolio and blog theme for Astro.',
+  author: 'Yue Jiakai',
+  title: '',
+  subtitle: '',
+  description: '',
   image: {
-    src: '/hero.jpg',
-    alt: 'Website Main Image',
+    src: '',
+    alt: '',
   },
-  email: 'kieranwme@gmail.com',
+  email: 'yuejiakai2008@gmail.com',
   socialLinks: [
     {
       text: 'GitHub',
-      href: 'https://github.com/kieranwv/astro-theme-vitesse',
+      href: '',
       icon: 'i-simple-icons-github',
       header: 'i-ri-github-line',
     },
-    {
-      text: 'Twitter',
-      href: '',
-      icon: 'i-simple-icons-x',
-      header: 'i-ri-twitter-x-line',
-    },
+
     {
       text: 'Linkedin',
       href: '',
@@ -44,57 +39,51 @@ export const siteConfig = {
     },
     navLinks: [
       {
-        text: 'Blog',
-        href: '/blog',
-      },
-      {
-        text: 'Notes',
-        href: '/blog/notes',
-      },
-      {
-        text: 'Talks',
-        href: '/blog/talks',
-      },
-      {
         text: 'Projects',
         href: '/projects',
+      },
+      {
+        text: 'Nerd stuff',
+        href: '/nerdstuff',
+      },
+      {
+        text: 'Achievements',
+        href: '/achievements',
       },
     ],
   },
   page: {
     blogLinks: [
       {
-        text: 'Blog',
-        href: '/blog',
+        text: 'Projects',
+        href: '/projects',
       },
+    ],
+    nerdStuffLinks: [
       {
-        text: 'Notes',
-        href: '/blog/notes',
-      },
-      {
-        text: 'Talks',
-        href: '/blog/talks',
+        text: 'Nerd stuff',
+        href: '/nerdstuff',
       },
     ],
   },
   footer: {
     navLinks: [
-      {
-        text: 'Posts Props',
-        href: '/posts-props',
-      },
-      {
-        text: 'Markdown Style',
-        href: '/md-style',
-      },
-      {
-        text: 'View on Astro',
-        href: 'https://astro.build/themes/details/vitesse-theme-for-astro/',
-      },
-      {
-        text: 'GitHub Repository',
-        href: 'https://github.com/kieranwv/astro-theme-vitesse',
-      },
+      // {
+      //   text: 'Posts Props',
+      //   href: '/posts-props',
+      // },
+      // {
+      //   text: 'Markdown Style',
+      //   href: '/md-style',
+      // },
+      // {
+      //   text: 'View on Astro',
+      //   href: 'https://astro.build/themes/details/vitesse-theme-for-astro/',
+      // },
+      // {
+      //   text: 'GitHub Repository',
+      //   href: 'https://github.com/kieranwv/astro-theme-vitesse',
+      // },
     ],
   },
 }

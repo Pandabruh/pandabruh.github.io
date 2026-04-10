@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ListPosts from '@/components/ListPosts.vue'
+import siteConfig from '@/site-config'
+import { getPosts } from '@/utils/posts'
+
+export async function getStaticPaths() {
+  const paths = siteConfig.page.blogLinks.map((nav) => {
+    const href = nav.href.replace('/projects', '')  // Changed from /blog to /projects
+    return {
+      params: {
+        path: href === '' ? undefined : href.replace(/^\/+|\/+$/g, ''),
+      },
+    }
+  })
+  return paths
+}
+
+const { path } = Astro.params
+
+const posts = await getPosts(path, 'projects')  // Added 'projects' to use correct collection
+
+function activeLink(pathname: string) {
+  return Astro.url.pathname.replace(/\/+/g, '/').replace(/\/$/, '') === pathname
+}
+---
+
+<BaseLayout title="Projects" description="List of all the projects." pageNav={true} pageOperate={true}>
+  <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 flex-wrap mb-8">
+    {
+      siteConfig.page.blogLinks.map((nav) => (
+        <a
+          aria-label={nav.text}
+          class={`text-4xl font-bold ${activeLink(nav.href) ? 'opacity-80' : 'opacity-50'}`}
+        >
+          {nav.text}
+        </a>
+      ))
+    }
+  </div>
+  <ListPosts list={posts} />
+</BaseLayout>

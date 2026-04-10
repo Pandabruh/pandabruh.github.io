@@ -1,65 +1,61 @@
 <script lang="ts" setup>
-import { useDark, useToggle } from '@vueuse/core'
-import { onMounted, watchEffect } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
-const isDark = useDark()
+const isDark = ref(false)
 
-const toggleDark = useToggle(isDark)
-
-watchEffect(() => {
-  if (isDark.value)
-    setDarkMode(document)
-})
-
-function setDarkMode(document: Document) {
-  if (isDark.value)
-    document.documentElement.classList.add('dark')
-}
 onMounted(() => {
+  document.documentElement.classList.add('transition-ready')
+  // Initialize theme from localStorage
+  const saved = localStorage.getItem('vueuse-color-scheme')
+  isDark.value = saved === 'dark'
+  
+  // Apply initial theme
+  applyTheme()
+  
+  // Listen for Astro page changes
   document.addEventListener('astro:before-swap', (event) => {
-    setDarkMode(event.newDocument)
+    const saved = localStorage.getItem('vueuse-color-scheme')
+    const dark = saved === 'dark'
+    
+    if (dark) {
+      event.newDocument.documentElement.classList.add('dark')
+      event.newDocument.documentElement.style.colorScheme = 'dark'
+    } else {
+      event.newDocument.documentElement.classList.remove('dark')
+      event.newDocument.documentElement.style.colorScheme = 'light'
+    }
+  })
+  
+  document.addEventListener('astro:after-swap', () => {
+    applyTheme()
   })
 })
 
-function toggleTheme(event: MouseEvent) {
-  const x = event.clientX
-  const y = event.clientY
-  const endRadius = Math.hypot(
-    Math.max(x, innerWidth - x),
-    Math.max(y, innerHeight - y),
-  )
-  // @ts-expect-error: Transition API
-  if (!document.startViewTransition) {
-    toggleDark()
-    return
+watch(isDark, () => {
+  applyTheme()
+  localStorage.setItem('vueuse-color-scheme', isDark.value ? 'dark' : 'light')
+})
+
+function applyTheme() {
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+    document.documentElement.style.colorScheme = 'dark'
+  } else {
+    document.documentElement.classList.remove('dark')
+    document.documentElement.style.colorScheme = 'light'
   }
+}
 
-  // @ts-expect-error: Transition API
-  const transition = document.startViewTransition(async () => {
-    toggleDark()
-  })
-
-  transition.ready.then(() => {
-    const clipPath = [
-      `circle(0px at ${x}px ${y}px)`,
-      `circle(${endRadius}px at ${x}px ${y}px)`,
-    ]
-    document.documentElement.animate(
-      {
-        clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
-      },
-      {
-        duration: 400,
-        easing: 'ease-in',
-        pseudoElement: isDark.value
-          ? '::view-transition-old(root)'
-          : '::view-transition-new(root)',
-      },
-    )
-  })
+function toggleTheme() {
+  isDark.value = !isDark.value
 }
 </script>
 
 <template>
-  <button :aria-label="isDark ? 'Dark Theme' : 'Light Theme'" nav-link dark:i-ri-moon-line i-ri-sun-line @click="toggleTheme" />
+  <button 
+    :aria-label="isDark ? 'Dark Theme' : 'Light Theme'" 
+    nav-link 
+    :class="isDark ? 'i-ri-moon-line' : 'i-ri-sun-line'"
+    @click="toggleTheme" 
+  />
 </template>

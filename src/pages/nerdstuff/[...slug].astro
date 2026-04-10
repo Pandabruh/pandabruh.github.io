@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { type CollectionPosts } from '@/types'
+import { getPosts } from '@/utils/posts'
+import TableOfContents from '@/components/TableOfContents.vue'
+
+export async function getStaticPaths() {
+  const posts = await getPosts(undefined, 'nerdstuff')
+  return posts.map((post) => {
+    return {
+      params: { slug: post.slug },
+      props: {
+        post,
+      },
+    }
+  })
+}
+
+type Props = { post: CollectionPosts }
+
+const { post } = Astro.props
+const { title, image, description, date, duration, tag } = post.data
+
+const { Content } = await post.render()
+
+function getDate(date: string) {
+  return new Date(date).toISOString()
+}
+---
+
+<BaseLayout title={title} description={description} pageType="article">
+  <TableOfContents client:load />
+  <article class="prose dark:prose-invert max-w-none" style="min-height: 100vh;">
+    <h1 style="margin: 0;">{title}</h1>
+    <p op-50 style="margin: 0.5rem 0;">
+      {date && <time datetime={getDate(date)}>{date.split(',')}</time>}
+      {duration && <span>· {duration}</span>}
+      {tag && <span>· {tag}</span>}
+    </p>
+    {
+      image && (
+        <p style="margin: 1rem 0;">
+          <img width="640" height="360" src={image.src} alt={image.alt || ''} style="max-width: 100%; height: auto; display: block;" />
+        </p>
+      )
+    }
+    <div style="margin-top: 2rem;">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
