@@ -13,7 +13,7 @@ const activeId = ref('')
 onMounted(() => {
   // Get all h2 headings from the article
   const article = document.querySelector('article')
-  if (!article) 
+  if (!article)
     return
 
   const h2Elements = article.querySelectorAll('h2')

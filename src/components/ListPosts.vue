@@ -22,13 +22,13 @@ function getDate(date: string) {
 }
 
 function getHref(post: Post) {
-  if (post.data.redirect) 
+  if (post.data.redirect)
     return post.data.redirect
   return `/${post.collection}/${post.slug}`
 }
 
 function getTarget(post: Post) {
-  if (post.data.redirect) 
+  if (post.data.redirect)
     return '_blank'
   return '_self'
 }

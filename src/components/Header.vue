@@ -9,7 +9,7 @@ const navLinks = siteConfig.header.navLinks || []
 
 const socialLinks = computed(() => {
   return siteConfig.socialLinks.filter((link: Record<string, any>) => {
-    if (link.header && typeof link.header === 'boolean') 
+    if (link.header && typeof link.header === 'boolean')
       return link
     if (link.header && typeof link.header === 'string') {
       link.icon = link.header.includes('i-') ? link.header : link.icon
@@ -24,7 +24,7 @@ const oldScroll = ref(unref(scroll))
 
 onMounted(() => {
   const headerEl = document.querySelector('#header') as HTMLElement
-  if (!headerEl) 
+  if (!headerEl)
     return
 
   if (document.documentElement.scrollTop > 100)
