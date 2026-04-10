@@ -7,7 +7,7 @@ import '@/styles/dot.css'
 interface Props {
   title?: string
   description?: string
-  image?: { src: string; alt?: string }
+  image?: { src: string, alt?: string }
   pageType?: 'website' | 'article'
 }
 
@@ -27,7 +27,8 @@ const canonicalURL = new URL(Astro.request.url, Astro.site)
 function formatCanonicalURL(url: string | URL) {
   const path = url.toString()
   const hasQueryParams = path.includes('?')
-  if (hasQueryParams) path.replace(/\/?$/, '')
+  if (hasQueryParams)
+path.replace(/\/?$/, '')
   return path.replace(/\/?$/, hasQueryParams ? '' : '/')
 }
 ---
