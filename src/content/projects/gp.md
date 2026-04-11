@@ -3,6 +3,7 @@ title: GP
 description: Random GP J2 Stuff
 date: 2026-01-21
 tag: Notes
+draft: true
 ---
 
 <h2> Essay question: Should there be any control over the production of energy when the need for it is so great? </h2>
