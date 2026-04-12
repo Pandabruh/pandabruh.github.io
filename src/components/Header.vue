@@ -8,15 +8,7 @@ import ThemeToggle from './ThemeToggle.vue'
 const navLinks = siteConfig.header.navLinks || []
 
 const socialLinks = computed(() => {
-  return siteConfig.socialLinks.filter((link: Record<string, any>) => {
-    if (link.header && typeof link.header === 'boolean')
-      return link
-    if (link.header && typeof link.header === 'string') {
-      link.icon = link.header.includes('i-') ? link.header : link.icon
-      return link
-    }
-    return false
-  })
+  return siteConfig.socialLinks.filter(link => link.href !== undefined)
 })
 
 const { y: scroll } = useWindowScroll()
@@ -80,23 +72,17 @@ onMounted(() => {
       </nav>
     </div>
 
-    <div class="flex gap-x-6">
+    <div class="flex gap-x-4 ">
       <a
         v-for="link in socialLinks"
         :key="link.text"
-        :aria-label="`${link.text}`"
-        :class="link.icon"
-        nav-link
+        :aria-label="link.text"
         :target="getLinkTarget(link.href)"
         :href="link.href"
-      />
-      <a
-        nav-link
-        target="_blank"
-        href="/rss.xml"
-        i-ri-rss-line
-        aria-label="RSS"
-      />
+        class="text-lg opacity-70 hover:opacity-100 transition-all duration-200"
+      >
+        <i :class="link.icon" />
+      </a>
       <ThemeToggle />
     </div>
   </header>

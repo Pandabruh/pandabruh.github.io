@@ -11,25 +11,24 @@ export const siteConfig = {
   socialLinks: [
     {
       text: 'GitHub',
-      href: '',
-      icon: 'i-simple-icons-github',
-      header: 'i-ri-github-line',
+      href: 'https://github.com/Pandabruh',
+      icon: 'i-ri-github-line',
     },
 
     {
       text: 'Linkedin',
       href: '',
-      icon: 'i-simple-icons-linkedin',
+      // icon: 'i-simple-icons-linkedin',
     },
     {
       text: 'Instagram',
-      href: '',
-      icon: 'i-simple-icons-instagram',
+      href: 'https://www.instagram.com/jiakai_76x/',
+      icon: 'i-ri-instagram-line',
     },
     {
       text: 'Youtube',
       href: '',
-      icon: 'i-simple-icons-youtube',
+      // icon: 'i-simple-icons-youtube',
     },
   ],
   header: {

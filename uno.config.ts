@@ -63,5 +63,6 @@ export default defineConfig({
     'i-simple-icons-sinaweibo',
     'i-ri-github-line',
     'i-ri-twitter-x-line',
+    'i-ri-instagram-line',
   ],
 })

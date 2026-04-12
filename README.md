@@ -5,7 +5,7 @@ My personal portfolio website built with Astro.
 ## Projects
 
 - Drone project
-- And more...
+- More coming soon hopefully...
 
 ## Credits
 
