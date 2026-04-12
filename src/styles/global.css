@@ -10,14 +10,15 @@ html.dark .astro-code span {
 /* Force scrollbar and prevent horizontal overflow */
 html {
   overflow-y: scroll;
-  width: 100vw;
-  overflow-x: hidden;
-  overscroll-behavior: none;
+  width: 100%;
+  overflow-x: clip;
+  /* overscroll-behavior: none; */
 }
 
 /* Prevent layout shift from content loading */
 body {
   overflow-x: hidden;
+  text-align: justify;
 }
 
 /* Prevent images from causing layout shift */
@@ -137,4 +138,16 @@ pre code {
 .singleimg {
   margin-top: -10px;
   justify-content: center;
+}
+
+.video-embed {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 15px;
+  border: 5px solid #3e3d3d87;
+}
+
+.video-solo{
+  width: 50%;
 }

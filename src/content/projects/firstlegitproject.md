@@ -10,7 +10,7 @@ duration: 20min
 Final Picture
 </div>
 
-I think I delayed this project for at least two years until I finally found 'time' and mental capacity to do this. This project took so long to actually initialise due to the relatively high learning curve. I had to learn how to design my own PCB (Printed Circuit Board), program with new languages, and so much electrical work which was absolutely cancerous. You'll see what I mean.
+I think I delayed this project for at least two years until I finally found 'time' and mental capacity to do this. This project took so long to actually initialise due to the relatively high learning curve. I had to learn how to design my own PCB (Printed Circuit Board), program with new languages, and so much electrical work which was absolutely cancerous.
 
 _Note: This documentation is structured chronologically, reflecting the order in which the work was carried out rather than being divided into sections._
 
@@ -236,11 +236,11 @@ I needed longer male pin headers but did not have them so I used two female head
 
 <div class="sidetoside" style="margin-top: -30px;">
   <div style="flex: 1; min-width: 300px; text-align: center;">
-    <video src="/ledtest.mp4" controls="controls" width="100%" height="auto" style="border-radius: 15px; border: 5px solid #333; max-width: 100%;"></video>
+    <video src="/ledtest.mp4" controls class="video-embed"></video>
     <span style="font-family: 'Times New Roman', serif;">Wi-Fi Test</span>
   </div>
   <div style="flex: 1; min-width: 300px; text-align: center;">
-    <video src="/pleaseimu.mp4" controls="controls" width="100%" height="auto" style="border-radius: 15px; border: 5px solid #333; max-width: 100%;"></video>
+    <video src="/pleaseimu.mp4" controls class="video-embed"></video>
     <span style="font-family: 'Times New Roman', serif;">IMU Test</span>
   </div>
 </div>
@@ -267,6 +267,18 @@ The press-fit design came with multiple issues. Mainly it required trial and err
 <h2>Flight?</h2>
 
 Now came the moment of truth: can it fly? As the motors are directly powered by the battery, using a USB-C port from my laptop to power it for testing was not possible. The code was just to power each motors manually from my laptop through Wi-Fi, without processing any IMU data yet.
+
+<center>
+<video src="/droneoldtest.mp4" controls class="video-embed video-solo"></video>
+    <span style="font-family: 'Times New Roman', serif;">First "Flight" Test</span>
+</center>
+&nbsp;<br>&nbsp;<br>
+
+To be frank, I would consider the result a partial failure. While I initially felt a sense of excitement at seeing my drone move, that feeling quickly gave way to a more critical awareness of its limitations. The moment was akin to watching a baby crawl, encouraging as a first step, but also a reminder of how far there is to go. It highlighted not just what had been achieved, but more importantly, what still needed improvement. The thrust was just not large enough, I needed stronger motors, larger propellers, <b> a new design. </b>
+
+<h2>Rebirth</h2>
+
+In hindsight, I probably should have done some calculations before buying the parts. Sounds stupid I know. So this time I actually did what I was supposed to.
 
 <div id="cost-breakdown">
   <h2>Cost Breakdown</h2>
