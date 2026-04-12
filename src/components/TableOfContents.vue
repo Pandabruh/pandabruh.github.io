@@ -115,7 +115,7 @@ html.dark .toc-line {
 .toc-item.active .toc-line {
   width: 40px;
   height: 2px;
-  background-color: #3b82f6;
+  background-color: #fa7171;
 }
 
 .toc-text {
@@ -144,8 +144,8 @@ html.dark .toc-text {
 }
 
 .toc-item:hover .toc-line {
+  background-color: #fa7171;
   width: 30px;
-  background-color: #60a5fa;
 }
 
 /* Hide on mobile */
