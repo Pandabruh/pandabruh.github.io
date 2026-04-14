@@ -1,0 +1,44 @@
+---
+import siteConfig from '@/site-config'
+import { getLinkTarget } from '@/utils/link'
+
+const year = new Date().getFullYear()
+---
+
+<footer
+  class="w-full mt-18 pt-6 pb-8 max-w-3xl text-sm flex flex-col gap-4 border-main border-t !border-op-50 text-dark dark:text-white"
+>
+  {siteConfig.footer.navLinks?.length > 0 && (
+    <div class="flex flex-wrap gap-4">
+      {siteConfig.footer.navLinks.map((link, index) => (
+        <>
+          <a
+            aria-label={link.text}
+            target={getLinkTarget(link.href)}
+            class="nav-link flex items-center"
+            href={link.href}
+          >
+            {link.text}
+          </a>
+          {index < siteConfig.footer.navLinks.length - 1 && (
+            <span op-70>/</span>
+          )}
+        </>
+      ))}
+    </div>
+  )}
+
+  <div class="flex">
+    <a
+      nav-link
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+      target="_blank"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+
+    <span op-70>
+      &nbsp;&nbsp;&copy;&nbsp;&nbsp;{year}&nbsp;&nbsp;{siteConfig.author}.
+    </span>
+  </div>
+</footer>

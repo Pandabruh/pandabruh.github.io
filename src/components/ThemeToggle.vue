@@ -1,56 +1,52 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const isDark = ref(false)
 
-onMounted(() => {
-  document.documentElement.classList.add('transition-ready')
-  // Initialize theme from localStorage
-  const saved = localStorage.getItem('vueuse-color-scheme')
-  isDark.value = saved === 'dark'
-
-  // Apply initial theme
-  applyTheme()
-
-  // Listen for Astro page changes
-  document.addEventListener('astro:before-swap', (event) => {
-    const saved = localStorage.getItem('vueuse-color-scheme')
-    const dark = saved === 'dark'
-
-    if (dark) {
-      event.newDocument.documentElement.classList.add('dark')
-      event.newDocument.documentElement.style.colorScheme = 'dark'
-    }
-    else {
-      event.newDocument.documentElement.classList.remove('dark')
-      event.newDocument.documentElement.style.colorScheme = 'light'
-    }
-  })
-
-  document.addEventListener('astro:after-swap', () => {
-    applyTheme()
-  })
-})
-
-watch(isDark, () => {
-  applyTheme()
-  localStorage.setItem('vueuse-color-scheme', isDark.value ? 'dark' : 'light')
-})
+let cachedTheme = 'light'
 
 function applyTheme() {
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-    document.documentElement.style.colorScheme = 'dark'
+  const root = document.documentElement
+
+  if (cachedTheme === 'dark') {
+    root.classList.add('dark')
+    root.style.colorScheme = 'dark'
+    isDark.value = true
   }
   else {
-    document.documentElement.classList.remove('dark')
-    document.documentElement.style.colorScheme = 'light'
+    root.classList.remove('dark')
+    root.style.colorScheme = 'light'
+    isDark.value = false
   }
 }
 
 function toggleTheme() {
-  isDark.value = !isDark.value
+  cachedTheme = cachedTheme === 'dark' ? 'light' : 'dark'
+  localStorage.setItem('vueuse-color-scheme', cachedTheme)
+  applyTheme()
 }
+
+onMounted(() => {
+  document.documentElement.classList.add('transition-ready')
+
+  cachedTheme = localStorage.getItem('vueuse-color-scheme') || 'light'
+
+  applyTheme()
+
+  // ✅ Fix Astro navigation flash
+  document.addEventListener('astro:before-swap', (event: any) => {
+    const root = event.newDocument.documentElement
+
+    if (cachedTheme === 'dark') {
+      root.classList.add('dark')
+      root.style.colorScheme = 'dark'
+    }
+    else {
+      root.classList.remove('dark')
+      root.style.colorScheme = 'light'
+    }
+  })
+})
 </script>
 
 <template>

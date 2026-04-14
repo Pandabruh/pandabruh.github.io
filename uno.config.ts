@@ -64,5 +64,7 @@ export default defineConfig({
     'i-ri-github-line',
     'i-ri-twitter-x-line',
     'i-ri-instagram-line',
+    'i-ri-menu-line',
+    'i-ri-close-line',
   ],
 })

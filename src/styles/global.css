@@ -15,6 +15,14 @@ html {
   /* overscroll-behavior: none; */
 }
 
+html, body {
+  background: var(--bg);
+}
+
+html.is-changing *,
+html.is-animating * {
+  transition: none !important;
+}
 /* Prevent layout shift from content loading */
 body {
   overflow-x: hidden;
@@ -150,4 +158,9 @@ pre code {
 
 .video-solo{
   width: 50%;
+}
+
+.header-shrink {
+  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.4); /* or theme-based */
 }
