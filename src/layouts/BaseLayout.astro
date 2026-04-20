@@ -121,11 +121,15 @@ const { ...head } = Astro.props
           newDoc.classList.remove('dark')
           newDoc.style.colorScheme = 'light'
         }
-
-        newDoc.classList.add('transition-ready')
       })
 
       document.addEventListener('astro:page-load', () => {
+        // Disable transitions before applying theme to prevent flash on navigation.
+        // transition-ready persists on the same html element across Astro client-side
+        // navigations, so we must strip it, apply the correct dark class without
+        // triggering a transition, then re-enable transitions atomically with body.loaded.
+        document.documentElement.classList.remove('transition-ready')
+
         const saved = localStorage.getItem('vueuse-color-scheme')
         const isDark = saved === 'dark'
 
@@ -153,6 +157,30 @@ const { ...head } = Astro.props
             }
           })
         })
+
+        // Lazy-load videos: wrap each video in a click-to-play overlay so the
+        // browser does not download video data until the user chooses to watch.
+        // Only targets videos with the video-embed class (the site's standard video style).
+        document.querySelectorAll('video.video-embed:not([data-lazy-init])').forEach((video) => {
+          video.setAttribute('preload', 'none')
+          video.setAttribute('data-lazy-init', '')
+
+          const wrapper = document.createElement('div')
+          wrapper.className = 'video-lazy-wrapper'
+          video.parentNode.insertBefore(wrapper, video)
+          wrapper.appendChild(video)
+
+          const overlay = document.createElement('div')
+          overlay.className = 'video-lazy-overlay'
+          overlay.setAttribute('aria-label', 'Play video')
+          overlay.innerHTML = '<div class="video-play-btn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>'
+          wrapper.appendChild(overlay)
+
+          overlay.addEventListener('click', () => {
+            overlay.remove()
+            video.play().catch(() => {})
+          })
+        })
       })
     </script>
 
@@ -163,9 +191,7 @@ const { ...head } = Astro.props
           background-color,
           border-color,
           fill,
-          stroke,
-          opacity,
-          transform !important;
+          stroke !important;
         transition-duration: 200ms !important;
         transition-timing-function: ease-in-out !important;
       }
