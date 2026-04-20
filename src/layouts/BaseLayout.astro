@@ -21,8 +21,6 @@ const { ...head } = Astro.props
 
         root.classList.toggle('dark', isDark)
         root.style.colorScheme = isDark ? 'dark' : 'light'
-
-        root.classList.add('transition-ready')
       })()
     </script>
 
@@ -100,13 +98,13 @@ const { ...head } = Astro.props
             window.scrollTo(0, Number.parseInt(savedPos))
             sessionStorage.removeItem('scrollPos')
             document.body.classList.add('loaded')
+            document.documentElement.classList.add('transition-ready')
           })
         }
         else {
           document.body.classList.add('loaded')
+          document.documentElement.classList.add('transition-ready')
         }
-
-        document.documentElement.classList.add('transition-ready')
       })
 
       document.addEventListener('astro:before-swap', (e) => {

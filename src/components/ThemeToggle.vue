@@ -27,11 +27,8 @@ function toggleTheme() {
 }
 
 onMounted(() => {
-  document.documentElement.classList.add('transition-ready')
-
   cachedTheme = localStorage.getItem('vueuse-color-scheme') || 'light'
-
-  applyTheme()
+  isDark.value = cachedTheme === 'dark'
 
   // ✅ Fix Astro navigation flash
   document.addEventListener('astro:before-swap', (event: any) => {
