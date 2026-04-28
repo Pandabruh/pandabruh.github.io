@@ -54,7 +54,7 @@ onMounted(() => {
     ]"
     class="fixed top-0 left-0 right-0 z-899 h-20 px-6 flex items-center bg-transparent"
   >
-    <div class="flex items-center h-full gap-x-6 flex-1">
+    <div class="flex items-center h-full gap-x-2 flex-1">
       <a href="/" class="mr-6" aria-label="Header Logo Image">
         <img
           width="32"
