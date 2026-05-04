@@ -236,11 +236,11 @@ I needed longer male pin headers but did not have them so I used two female head
 
 <div class="sidetoside" style="margin-top: -30px;">
   <div style="flex: 1; min-width: 300px; text-align: center;">
-    <video src="/ledtest.mp4" controls class="video-embed"></video>
+    <video src="/ledtest.mp4" controls class="video-embed" preload="metadata"></video>
     <span style="font-family: 'Times New Roman', serif;">Wi-Fi Test</span>
   </div>
   <div style="flex: 1; min-width: 300px; text-align: center;">
-    <video src="/pleaseimu.mp4" controls class="video-embed"></video>
+    <video src="/pleaseimu.mp4" controls class="video-embed" preload="metadata"></video>
     <span style="font-family: 'Times New Roman', serif;">IMU Test</span>
   </div>
 </div>
@@ -269,7 +269,7 @@ The press-fit design came with multiple issues. Mainly it required trial and err
 Now came the moment of truth: can it fly? As the motors are directly powered by the battery, using a USB-C port from my laptop to power it for testing was not possible. The code was just to power each motors manually from my laptop through Wi-Fi, without processing any IMU data yet.
 
 <center>
-<video src="/droneoldtest.mp4" controls class="video-embed video-solo"></video>
+<video src="/droneoldtest.mp4" controls class="video-embed video-solo" preload="metadata"></video>
     <span style="font-family: 'Times New Roman', serif;">First "Flight" Test</span>
 </center>
 &nbsp;<br>&nbsp;<br>
