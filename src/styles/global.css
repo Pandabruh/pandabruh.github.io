@@ -80,6 +80,16 @@ img {
   height: auto;
   border-radius: 6px;
 }
+.sidetoside {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: -30px; }
+
+.singleimg {
+  margin-top: -10px;
+  justify-content: center; }
 
 .video-embed {
   width: 100%;
