@@ -1,7 +1,7 @@
 ---
-title: First legit project
-description: yes
-date: 2025-12-01
+title: Drone
+description: First 'real' personal engineering project
+date: 2026-01-01
 tag: Engineering
 duration: 20min
 ---
@@ -116,9 +116,7 @@ Dimensions: 70mm x 63mm x 25mm. I estimated the amount of space I needed for the
 
 <h2>Circuits</h2>
 
-To provide some context, prior to this project, I have not done anything that heavily required electrical engineering skills, meaning that I would just have to figure things out as they go. I had my qualms about doing this project largely due to the steep learning curve associated with electrical engineering that I hear from my friends. But as usual, I just said "f\*\*\* it we ball" and went for it.
-
-<span style = "margin:20px;"> _"F\*\*\* it we ball."_ — Yue Jiakai </span>
+To provide some context, prior to this project, I have not done anything that heavily required electrical engineering skills, meaning that I would just have to figure things out as they go. I had my qualms about doing this project largely due to the steep learning curve associated with electrical engineering that I hear from my friends.
 
 With the first drone model completed, I began with designing the schematic for the PCB. First off, I needed to figure out what my PCB would need to accomplish:
 
