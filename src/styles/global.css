@@ -89,11 +89,13 @@ img {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: -30px; }
+  margin-top: -30px;
+}
 
 .singleimg {
   margin-top: -10px;
-  justify-content: center; }
+  justify-content: center;
+}
 
 .video-embed {
   width: 100%;
@@ -112,26 +114,8 @@ img {
   overflow-wrap: break-word;
 }
 
-/* VIEW TRANSITIONS */
-
-html.is-changing *,
-html.is-animating * {
-  transition: none !important;
-}
-
-/* Enable transitions only when ready */
-html.transition-ready * {
-  transition:
-    color 200ms ease-in-out,
-    background-color 200ms ease-in-out,
-    border-color 200ms ease-in-out !important;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
+/* VIEW TRANSITIONS FIX */
+/* Restored Astro's natural cross-fade by removing "animation: none" */
 
 ::view-transition-old(root) { z-index: 1; }
 ::view-transition-new(root) { z-index: 2147483646; }
@@ -156,6 +140,8 @@ html.dark::view-transition-new(root) { z-index: 1; }
   height: 2px;
 }
 
+/* BLOCKQUOTES */
+
 /* Remove accidental markdown blockquote quotation marks */
 .prose blockquote::before,
 .prose blockquote::after,
@@ -166,7 +152,7 @@ blockquote::after {
   content: "" !important;
 }
 
-/* Optional: Add a nice left border to make it look like a classic quote */
+/* Add a nice left border to make it look like a classic quote */
 .prose blockquote,
 article blockquote,
 blockquote {

@@ -1,7 +1,9 @@
 ---
+import { ViewTransitions } from 'astro:transitions'
 import BaseHead from '@/components/BaseHead.astro'
 import Footer from '@/components/Footer.astro'
 import Header from '@/components/Header.vue'
+import '../styles/global.css'
 import 'katex/dist/katex.min.css'
 
 const { ...head } = Astro.props
@@ -11,18 +13,19 @@ const { ...head } = Astro.props
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <BaseHead {...head} />
+    <ViewTransitions />
 
     <script is:inline>
+      // 1. Sets initial color IMMEDIATELY to prevent FOUC (Flash of Unstyled Content)
       (function () {
         const saved = localStorage.getItem('vueuse-color-scheme') || 'light'
         const isDark = saved === 'dark'
-
         const root = document.documentElement
 
         root.classList.toggle('dark', isDark)
         root.style.colorScheme = isDark ? 'dark' : 'light'
-
-        root.classList.add('transition-ready')
+        // DO NOT add 'transition-ready' here, or the initial load will flash!
       })()
     </script>
 
@@ -31,35 +34,21 @@ const { ...head } = Astro.props
         background-color: #fafafa;
         color: #1f2937;
       }
-
       html.dark {
         background-color: #0f1419;
         color: #d1d5db;
       }
-
       body {
         margin: 0;
         padding: 0;
-        visibility: hidden;
-      }
-
-      body.loaded {
-        visibility: visible;
-      }
-
-      html, body {
-        view-transition-name: none !important;
       }
     </style>
-
-    <BaseHead {...head} />
   </head>
 
-  <body
-    class="bg-main text-main min-h-screen font-sans w-full bg-dot relative"
-    style="view-transition-name: none;"
-  >
-    <Header client:idle />
+  <body class="bg-main text-main min-h-screen font-sans w-full bg-dot relative">
+    <div transition:persist="site-header">
+      <Header client:load />
+    </div>
 
     <main class="grow max-w-3xl mx-auto sm:pt-36 pt-26 pb-16 px-6 relative">
       <slot />
@@ -72,20 +61,17 @@ if ('scrollRestoration' in history) {
 }
 
 window.addEventListener('beforeunload', () => {
-  sessionStorage.setItem('scrollPos', window.scrollY.toString())
+  sessionStorage.setItem(`scrollPos:${window.location.pathname}`, window.scrollY.toString())
 })
 
 window.addEventListener('load', () => {
-  const savedPos = sessionStorage.getItem('scrollPos')
+  const savedPos = sessionStorage.getItem(`scrollPos:${window.location.pathname}`)
 
   if (savedPos) {
     const images = document.querySelectorAll('img')
-
     const imagePromises = Array.from(images).map((img) => {
-      if (img.complete) {
+      if (img.complete)
         return Promise.resolve()
-      }
-
       return new Promise((resolve) => {
         img.onload = resolve
         img.onerror = resolve
@@ -94,22 +80,21 @@ window.addEventListener('load', () => {
 
     Promise.all(imagePromises).then(() => {
       window.scrollTo(0, Number.parseInt(savedPos))
-      sessionStorage.removeItem('scrollPos')
-      document.body.classList.add('loaded')
+      sessionStorage.removeItem(`scrollPos:${window.location.pathname}`)
     })
   }
   else {
-    document.body.classList.add('loaded')
+    window.scrollTo(0, 0)
   }
-
-  document.documentElement.classList.add('transition-ready')
 })
 
 document.addEventListener('astro:before-swap', (e) => {
   const saved = localStorage.getItem('vueuse-color-scheme')
   const isDark = saved === 'dark'
-
   const newDoc = e.newDocument.documentElement
+
+  // Strip the transition class BEFORE swapping so the new page doesn't animate its entry
+  newDoc.classList.remove('transition-ready')
 
   if (isDark) {
     newDoc.classList.add('dark')
@@ -119,27 +104,26 @@ document.addEventListener('astro:before-swap', (e) => {
     newDoc.classList.remove('dark')
     newDoc.style.colorScheme = 'light'
   }
-
-  newDoc.classList.add('transition-ready')
 })
 
 document.addEventListener('astro:page-load', () => {
   const saved = localStorage.getItem('vueuse-color-scheme')
   const isDark = saved === 'dark'
+  const root = document.documentElement
 
   if (isDark) {
-    document.documentElement.classList.add('dark')
+    root.classList.add('dark')
   }
   else {
-    document.documentElement.classList.remove('dark')
+    root.classList.remove('dark')
   }
 
-  document.documentElement.classList.add('transition-ready')
-  document.body.classList.add('loaded')
+  // 3. Add the transition class slightly AFTER the page loads so it only animates on user clicks, not page routing
+  setTimeout(() => {
+    root.classList.add('transition-ready')
+  }, 50)
 })
 
-// Global Event Delegation for Smooth Scrolling
-// This ensures dynamically loaded components (like Vue Table of Contents) are covered
 if (!window.hasSetupSmoothScroll) {
   document.addEventListener('click', (e) => {
     const anchor = e.target.closest('a[href^="#"]')
@@ -164,22 +148,23 @@ if (!window.hasSetupSmoothScroll) {
 }
 </script>
 
-<style>
-      /* 1. Animate backgrounds only on the main layout structures */
+    <style>
       .transition-ready html,
       .transition-ready body,
       .transition-ready main,
-      .transition-ready header,
       .transition-ready footer {
         transition: background-color 200ms ease-in-out, border-color 200ms ease-in-out !important;
       }
 
-      /* 2. Animate text colors ONLY on macro typography elements, completely ignoring spans */
+      /* We separated the header so it is allowed to animate its sliding movement (transform) */
+      .transition-ready header {
+        transition: background-color 200ms ease-in-out, border-color 200ms ease-in-out, transform 400ms ease !important;
+      }
+
       .transition-ready .prose :where(h1, h2, h3, h4, p, li, blockquote) {
         transition: color 200ms ease-in-out !important;
       }
 
-      /* 3. NUKE ALL TRANSITIONS on math nodes to save CPU cycles */
       .katex,
       .katex *,
       .math,

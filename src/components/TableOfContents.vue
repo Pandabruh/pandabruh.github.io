@@ -9,6 +9,7 @@ interface Heading {
 
 const headings = ref<Heading[]>([])
 const activeId = ref('')
+let observer: IntersectionObserver | null = null
 
 onMounted(() => {
   // Get all h2 headings from the article
@@ -20,11 +21,7 @@ onMounted(() => {
   headings.value = Array.from(h2Elements).map((h2) => {
     // Create id if it doesn't exist
     if (!h2.id) {
-      h2.id
-        = h2.textContent
-          ?.toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^\w-]/g, '') || ''
+      h2.id = h2.textContent?.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') || ''
     }
     return {
       id: h2.id,
@@ -33,28 +30,31 @@ onMounted(() => {
     }
   })
 
-  // Track active section on scroll
-  window.addEventListener('scroll', updateActiveSection)
-  updateActiveSection()
+  // Set up the Intersection Observer instead of a scroll listener
+  // This is infinitely better for performance on heavy DOM pages
+  observer = new IntersectionObserver((entries) => {
+    // Find the most recently intersecting heading
+    const visibleEntries = entries.filter(entry => entry.isIntersecting)
+    if (visibleEntries.length > 0) {
+      // If multiple headings are visible, grab the first one
+      activeId.value = visibleEntries[0].target.id
+    }
+  }, {
+    // This margin creates a "trigger line" near the top of the screen
+    rootMargin: '-100px 0px -70% 0px',
+  })
+
+  // Start observing all the h2 elements
+  h2Elements.forEach((h2) => {
+    observer?.observe(h2)
+  })
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateActiveSection)
+  // Clean up observer when component unmounts
+  if (observer)
+    observer.disconnect()
 })
-
-function updateActiveSection() {
-  const scrollPosition = window.scrollY + 150
-
-  for (let i = headings.value.length - 1; i >= 0; i--) {
-    const heading = headings.value[i]
-    const element = document.getElementById(heading.id)
-
-    if (element && element.offsetTop <= scrollPosition) {
-      activeId.value = heading.id
-      break
-    }
-  }
-}
 
 function scrollToSection(id: string) {
   const element = document.getElementById(id)
@@ -104,7 +104,8 @@ function scrollToSection(id: string) {
   width: 20px;
   height: 2px;
   background-color: #cbd5e1;
-  transition: all 0.3s ease;
+  /* Reduced transition scope to only what is necessary */
+  transition: width 0.3s ease, background-color 0.3s ease;
   pointer-events: none;
 }
 

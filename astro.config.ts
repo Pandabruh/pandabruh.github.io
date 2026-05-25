@@ -18,7 +18,10 @@ export default defineConfig({
   }), vue(), tunnel()],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [
+      // Modified this line to strip out hidden MathML nodes and slash DOM size in half
+      [rehypeKatex, { output: 'html' }],
+    ],
     shikiConfig: {
       themes: {
         light: 'github-light-default',

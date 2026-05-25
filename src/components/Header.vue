@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useWindowScroll } from '@vueuse/core'
-import { computed, onMounted, ref, unref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, unref } from 'vue'
 import siteConfig from '@/site-config'
 import { getLinkTarget } from '@/utils/link'
 import ThemeToggle from './ThemeToggle.vue'
@@ -11,48 +11,54 @@ const navLinks = siteConfig.header.navLinks || []
 const isOpen = ref(false)
 const isShrunk = computed(() => scroll.value > 80)
 
+// 1. Added reactive state to control the hide behavior instead of manual DOM hacking
+const isHidden = ref(false)
+
 const socialLinks = computed(() => {
   return siteConfig.socialLinks.filter(link => link.href !== undefined)
 })
 
 const oldScroll = ref(unref(scroll))
 
-onMounted(() => {
-  const headerEl = document.querySelector('#header') as HTMLElement
-  if (!headerEl)
+// 2. Extracted the logic so Vue natively tracks it without fighting Astro
+function handleScroll() {
+  if (scroll.value < 30) {
+    isHidden.value = false
     return
+  }
 
-  if (document.documentElement.scrollTop > 50)
-    headerEl.classList.add('header-bg-blur')
+  if (scroll.value - oldScroll.value > 30) {
+    isHidden.value = true
+    oldScroll.value = scroll.value
+  }
 
-  window.addEventListener('scroll', () => {
-    if (scroll.value < 30) {
-      headerEl.classList.remove('header-hide')
-      return
-    }
+  if (oldScroll.value - scroll.value > 30) {
+    isHidden.value = false
+    oldScroll.value = scroll.value
+  }
+}
 
-    if (scroll.value - oldScroll.value > 30) {
-      headerEl.classList.add('header-hide')
-      oldScroll.value = scroll.value
-    }
+onMounted(() => {
+  // Run once immediately to prevent the hydration flash on page load
+  handleScroll()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
 
-    if (oldScroll.value - scroll.value > 30) {
-      headerEl.classList.remove('header-hide')
-      oldScroll.value = scroll.value
-    }
-  })
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
 <template>
   <header
     id="header"
-    view-transition-name="site-header"
+
     :class="[
       { 'header-bg-blur': scroll > 20 },
       { 'header-shrink': isShrunk },
+      { 'header-hide': isHidden },
     ]"
-    class="fixed top-0 left-0 right-0 z-899 h-20 px-6 flex items-center bg-transparent"
+    class="fixed top-0 left-0 right-0 z-899 h-20 px-6 flex items-center bg-transparent transition-all duration-300 ease-in-out"
   >
     <div class="flex items-center h-full gap-x-2 flex-1">
       <a href="/" class="mr-6" aria-label="Header Logo Image">
@@ -118,10 +124,17 @@ onMounted(() => {
 <style scoped>
 .header-hide {
   transform: translateY(-100%);
-  transition: transform 0.4s ease;
+  /* Removed the transition from here because Tailwind is now handling it globally on the header */
 }
 
 .header-bg-blur {
   --at-apply: backdrop-blur-sm;
+}
+
+/* 3. Stop Astro from aggressively animating the header during page swaps */
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 </style>
