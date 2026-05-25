@@ -30,6 +30,7 @@ function getDate(date: string) {
 
 <BaseLayout title={title} description={description} pageType="article">
   <TableOfContents client:load />
+
   <article class="prose dark:prose-invert max-w-none" style="min-height: 100vh;">
     <h1 style="margin: 0;">{title}</h1>
     <p op-50 style="margin: 0.5rem 0;">
@@ -55,3 +56,22 @@ function getDate(date: string) {
     </div>
   </article>
 </BaseLayout>
+
+<style is:global>
+  /* Test 2: PERFORMANCE HACK
+     Forces the browser to skip style recalculations for off-screen math and text.
+     This prevents the thousands of KaTeX spans from crashing the dark mode swap.
+  */
+  .katex-display,
+  .katex {
+    content-visibility: auto;
+    contain-intrinsic-size: 50px;
+  }
+
+  .prose > p,
+  .prose > div,
+  .prose > ul,
+  .prose > table {
+    content-visibility: auto;
+  }
+</style>

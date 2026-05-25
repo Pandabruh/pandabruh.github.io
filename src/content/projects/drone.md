@@ -1,31 +1,31 @@
 ---
-title: Drone
+title: Drone (work in construction)
 description: First 'real' personal engineering project
 date: 2026-01-01
 tag: Engineering
 duration: 20min
 ---
 
-<div style="text-align:center;">
+<!-- <div style="text-align:center;">
 Final Picture
-</div>
+</div> -->
 
 I think I delayed this project for at least two years until I finally found 'time' and mental capacity to do this. This project took so long to actually initialise due to the relatively high learning curve. I had to learn how to design my own PCB (Printed Circuit Board), program with new languages, and so much electrical work which was absolutely cancerous.
 
-_Note: This documentation is structured chronologically, reflecting the order in which the work was carried out rather than being divided into sections._
+> Note: This documentation is structured chronologically, reflecting the order in which the work was carried out rather than being divided into sections.
 
-<h2>Phase 1: Design & Planning</h2>
+## Phase 1: Design & Planning
 
-<span style = "margin:20px;"> _"Every journey begins with a single step."_ — Lao Tzu</span>
+>  "Every journey begins with a single step."
 
 Alright to begin I thought of building a small drone because it would be cheaper and cool (since anything that flies is cool). That meant I had to find electronics that are small enough and fabricate a PCB to fit all the components nicely which turned out to be a pain in the ass.
 
 In its simplest form, a drone requires
 
-- <b> MCU — Microcontroller Unit</b> (the brain)
-- <b> IMU — Inertial Measurement Unit</b> (measure an object's motion in space)
-- <b> Motors</b>
-- <b> Propellers</b>
+- **MCU — Microcontroller Unit**
+- **IMU — Inertial Measurement Unit**
+- **Motors**
+- **Propellers**
 
 To be honest I just went with the smallest electronics that were accessible, and when I mean accessible I mean free. I managed to get the MCU and IMU from my robotics lab. (see below)
 
@@ -44,7 +44,7 @@ To be honest I just went with the smallest electronics that were accessible, and
 
 I saved USD\$4.90 and USD\$24.95 for the MCU and IMU respectively (without shipping). The costs for the components for this project can be found [here](#cost-breakdown).
 
-For the motors, it is generally recommended to use brushless motors due to higher efficiency and smoother flight. However, they are more expensive than their brushed counterparts and require dedicated <b> ESCs (Electronic Speed Controllers)</b> for each motor, significantly increasing both cost and circuit complexity.
+For the motors, it is generally recommended to use brushless motors due to higher efficiency and smoother flight. However, they are more expensive than their brushed counterparts and require dedicated **ESCs (Electronic Speed Controllers)** for each motor, significantly increasing both cost and circuit complexity.
 
 <div class = "sidetoside">
   <div style="flex: 1; min-width: 300px; text-align: center;">
@@ -61,7 +61,7 @@ For the motors, it is generally recommended to use brushless motors due to highe
 
 For this project, I opted for 615 coreless brushed motors instead. These compact 6×15mm motors offer several advantages for a lightweight drone prototype: they can be driven directly with simple MOSFET circuits without ESCs, reducing both component count and overall system weight. Coreless motors eliminate the iron core found in traditional brushed motors, resulting in lower inertia, faster response times, and reduced electromagnetic interference. While they sacrifice some efficiency compared to brushless motors, their low cost (\~\$1-2 each vs \$10+ for brushless) make them passable for this project. As for the propellers, I just used the cheapest ones that fit my motor and called it a day.
 
-<h2>Visualization</h2>
+## Visualization
 
 With most of the key components settled, I started doing some rough sketches on paper. Personally I highly believe in visualizing the project beforehand, and the simplest way is often just with a paper and pen. (in this case a pencil)
 
@@ -95,7 +95,7 @@ I always hated how most drones looked like a box with 4 sticks poking out. I kno
 </div>
 &nbsp;<br>&nbsp;<br>
 
-<h2>Modelling — pt.1</h2>
+## Modelling — pt.1
 
 With that, I went onto fusion 360 and began with some rough modelling of the drone.
 
@@ -114,7 +114,7 @@ With that, I went onto fusion 360 and began with some rough modelling of the dro
 
 Dimensions: 70mm x 63mm x 25mm. I estimated the amount of space I needed for the electronics thought of using a press fit for the motor assembly. Honestly the first modelling phase went pretty smooth as I already had experience with using CAD (Computer-Aided Design) for a decent amount of time. Unfortunately, the same cannot be said for the next phase.
 
-<h2>Circuits</h2>
+## Circuits
 
 To provide some context, prior to this project, I have not done anything that heavily required electrical engineering skills, meaning that I would just have to figure things out as they go. I had my qualms about doing this project largely due to the steep learning curve associated with electrical engineering that I hear from my friends.
 
@@ -124,13 +124,13 @@ With the first drone model completed, I began with designing the schematic for t
 - Control speed of motors
 - Power components
 
-<h3>Communication</h3>
+### Communication
 
-I utilised <b>I2C </b>(Inter-Integrated Circuit) for the serial communication between the MCU and IMU as it is simple to implement and good for short distances on a circuit board. I2C utilises two rails : <b> SDA </b> (Serial Data) - carries the actual data back and forth; <b> SCL </b> (Serial Clock) - provides timing so everyone knows when to listen or talk. Simply put, the SDA and SCL pins must be connected between the MCU and the IMU.
+I utilised **I2C** (Inter-Integrated Circuit) for the serial communication between the MCU and IMU as it is simple to implement and good for short distances on a circuit board. I2C utilises two rails : **SDA** (Serial Data) - carries the actual data back and forth; **SCL** (Serial Clock) - provides timing so everyone knows when to listen or talk. Simply put, the SDA and SCL pins must be connected between the MCU and the IMU.
 
-<h3>Speed Control</h3>
+### Speed Control
 
-For the speed control, each of the four 615 coreless brushed motors is controlled by an <b>AON6354 N-channel MOSFET</b> operating as a low-side switch. When the ESP32C3 sends a logic HIGH signal to M4 (the control pin), it creates a positive gate-to-source voltage (V<sub>gs</sub>) across the MOSFET. This positive V<sub>gs</sub> turns the MOSFET ON, allowing current to flow from drain to source. The ESP32C3 microcontroller generates <b>PWM </b>(Pulse Width Modulation) signals (25kHz frequency, 8-bit resolution) that modulate motor speed by varying the duty cycle from 0-100%.
+For the speed control, each of the four 615 coreless brushed motors is controlled by an **AON6354 N-channel MOSFET** operating as a low-side switch. When the ESP32C3 sends a logic HIGH signal to M4 (the control pin), it creates a positive gate-to-source voltage (V<sub>gs</sub>) across the MOSFET. This positive V<sub>gs</sub> turns the MOSFET ON, allowing current to flow from drain to source. The ESP32C3 microcontroller generates **PWM** (Pulse Width Modulation) signals (25kHz frequency, 8-bit resolution) that modulate motor speed by varying the duty cycle from 0-100%.
 
 <center>
 <img src="/motordriver.png" alt="motordriver" width="300" height="auto">
@@ -140,9 +140,9 @@ For the speed control, each of the four 615 coreless brushed motors is controlle
   MOSFET Drive Circuit
 </div>
 
-<h3>Power</h3>
+### Power
 
-I used TI’s <b>TPS61099</b> boost converter IC to step up the 3.8V battery to 5V for the ESP32C3 and the 3V3 output pin on the ESP32C3 to power the IMU.
+I used TI’s **TPS61099** boost converter IC to step up the 3.8V battery to 5V for the ESP32C3 and the 3V3 output pin on the ESP32C3 to power the IMU.
 
 <center>
 <img src="/5vboost.png" alt="5vboost" width="600" height="auto">
@@ -151,7 +151,7 @@ I used TI’s <b>TPS61099</b> boost converter IC to step up the 3.8V battery to 
   Boost Circuit
 </div>
 
-<h2>PCB Layout</h2>
+## PCB Layout
 <div class = "sidetoside">
   <div style="flex: 1; min-width: 300px; text-align: center;">
     <img src="/pcbtop.png" alt="pcblayout" style="width: 100%; height: auto;" />
@@ -180,7 +180,7 @@ I used TI’s <b>TPS61099</b> boost converter IC to step up the 3.8V battery to 
 
 This is the final version of the PCB layouts. I went through multiple iterations over the course of a month before finalising. Honestly this part of the project was pretty fulfilling as I learnt so much about electrical engineering and different methods to optimise a PCB.
 
-<h2>Mistake no. 1</h2>
+## OOPS
 
 With the PCB and all the components settled, I began building the actual drone. I was going to start soldering on some pin headers and sockets onto the PCBs until I saw something smoke up while fiddling around with the parts. This is probably major mistake number 1.
 
@@ -199,7 +199,7 @@ With the PCB and all the components settled, I began building the actual drone. 
 
 Essentially what happened was that I did not check whether the battery polarity lined up with the connector's silkscreen. I placed in a PH 2.0 connector and the wrong terminals of the battery contacted the connector terminals on the PCB, reverse powering the buck, letting the magic smoke out.
 
-<h2>PCB Assembly</h2>
+## PCB Assembly
 
 <div class = "sidetoside">
   <div style="flex: 1; min-width: 100px; text-align: center;">
@@ -230,15 +230,15 @@ Essentially what happened was that I did not check whether the battery polarity 
 
 I needed longer male pin headers but did not have them so I used two female headers with a pin in between instead.
 
-<h2>Test</h2>
+## Test
 
 <div class="sidetoside" style="margin-top: -30px;">
   <div style="flex: 1; min-width: 300px; text-align: center;">
-    <video src="/ledtest.mp4" controls class="video-embed" preload="metadata"></video>
+    <video src="/ledtest.mp4" controls class="video-embed" preload="none" poster="/ledtestpic.png"></video>
     <span style="font-family: 'Times New Roman', serif;">Wi-Fi Test</span>
   </div>
   <div style="flex: 1; min-width: 300px; text-align: center;">
-    <video src="/pleaseimu.mp4" controls class="video-embed" preload="metadata"></video>
+    <video src="/pleaseimu.mp4" controls class="video-embed" preload="none" poster="/pleaseimupic.png"></video>
     <span style="font-family: 'Times New Roman', serif;">IMU Test</span>
   </div>
 </div>
@@ -246,7 +246,7 @@ I needed longer male pin headers but did not have them so I used two female head
 
 I tested the Wi-Fi capabilities of the ESP32 to make sure that it could actually receive commands and return information fast enough. For this, I included a small LED that I could toggle remotely. Very surprisingly, this somehow worked first try. The IMU data seemed pretty reasonable when testing so this part was done pretty fast as well.
 
-<h2>Modelling — pt.2</h2>
+## Modelling — pt.2
 
 The press-fit design came with multiple issues. Mainly it required trial and error to figure out the exact diameter for the motor, coupled with the inconsistencies of 3D printing. The fit was either too tight or too loose. So I came up with a clamp screw to lock the motor in place.
 
@@ -262,27 +262,25 @@ The press-fit design came with multiple issues. Mainly it required trial and err
   </div>
 </div>
 
-<h2>Flight?</h2>
+## Flight?
 
 Now came the moment of truth: can it fly? As the motors are directly powered by the battery, using a USB-C port from my laptop to power it for testing was not possible. The code was just to power each motors manually from my laptop through Wi-Fi, without processing any IMU data yet.
 
 <center>
-<video src="/droneoldtest.mp4" controls class="video-embed video-solo" preload="metadata"></video>
+<video src="/droneoldtest.mp4" controls class="video-embed video-solo" preload="none" poster="/droneoldtestpic.png"></video>
     <span style="font-family: 'Times New Roman', serif;">First "Flight" Test</span>
 </center>
 &nbsp;<br>&nbsp;<br>
 
-To be frank, I would consider the result a partial failure. While I initially felt a sense of excitement at seeing my drone move, that feeling quickly gave way to a more critical awareness of its limitations. The moment was akin to watching a baby crawl, encouraging as a first step, but also a reminder of how far there is to go. It highlighted not just what had been achieved, but more importantly, what still needed improvement. The thrust was just not large enough, I needed stronger motors, larger propellers, <b> a new design. </b>
+To be frank, I would consider the result a partial failure. While I initially felt a sense of excitement at seeing my drone move, that feeling quickly gave way to a more critical awareness of its limitations. The moment was akin to watching a baby crawl, encouraging as a first step, but also a reminder of how far there is to go. It highlighted not just what had been achieved, but more importantly, what still needed improvement. The thrust was just not large enough, I needed stronger motors, larger propellers, **a new design**.
 
-<h2>Rebirth</h2>
+## Rebirth
 
-In hindsight, I probably should have done some calculations before buying the parts. Sounds stupid I know. So this time I actually did what I was supposed to.
+In hindsight, I probably should have done some calculations before buying the parts. Sounds stupid I know. So this time I actually did what I was supposed to. The calculations can be found [here](/nerdstuff/droneupgrade).
 
 <div id="cost-breakdown">
-  <h2>Cost Breakdown</h2>
+
+  ## Cost Breakdown
+
   <img src="/droneallcost.jpg" alt="Cost breakdown" style="width: 100%; height: auto;" />
 </div>
-
-<!-- ![PCB for the drone brain](/dronebrainpcb.jpg)
-
- -->
