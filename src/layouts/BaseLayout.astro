@@ -172,5 +172,43 @@ if (!window.hasSetupSmoothScroll) {
         transition: none !important;
       }
     </style>
+<script>
+// This runs on initial load and every time Astro switches pages
+document.addEventListener('astro:page-load', () => {
+  // 1. Grab every single anchor (link) tag on the page
+  const allLinks = document.querySelectorAll('a')
+
+  allLinks.forEach((link) => {
+    const href = link.getAttribute('href')
+
+    // 2. Check if it's a valid external link (starts with http:// or https://)
+    if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+      try {
+        const targetUrl = new URL(href, window.location.href)
+
+        // 3. Check if the link's domain matches your website's domain
+        if (targetUrl.hostname !== window.location.hostname) {
+          // 4. Force standard HTML behavior for SEO and backup
+          link.setAttribute('target', '_blank')
+          link.setAttribute('rel', 'noopener noreferrer')
+
+          // 5. Block Astro/NProgress from hijacking the external click
+          link.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+
+            // 6. Launch a pristine browser instance for the destination URL
+            window.open(href, '_blank', 'noopener,noreferrer')
+          })
+        }
+      }
+      catch (error) {
+        // Soft catch just in case an invalid URL string slips through
+        console.error('Error processing link:', error)
+      }
+    }
+  })
+})
+</script>
   </body>
 </html>

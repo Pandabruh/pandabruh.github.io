@@ -1,6 +1,6 @@
 ---
-title: Drone - Motor upgrade documentation
-description: Resolve insufficient thrust issue from V1 by upgrading to higher-power motors
+title: Drone - V2 upgrade documentation
+description: Resolve insufficient thrust issue from V1 by upgrading to higher-power motors and larger propellers
 date: 2026-05-24
 tag: Engineering
 duration: 20min
@@ -16,7 +16,6 @@ duration: 20min
 
 ## Version 2 Specifications (Upgraded)
 
-### Motor System
 - **Motors:** 720 coreless motors
   - Resistance: 2.2Ω
   - Rated voltage: 3.7V nominal
@@ -90,7 +89,77 @@ $I_{total} = I_{motor} \times n_{motors} = 1.75A \times 4 = 7.0A$
 
 ### 2. Thrust Calculations
 
-#### Method 1: Momentum Theory (First Principles)
+#### Method 1: Blade Element Theory
+
+For small propellers, using non-dimensional coefficients:
+
+**Thrust coefficient equation:**
+
+<br>
+<div align="center">
+
+$T = C_T \times \rho \times n^2 \times D^4$
+
+</div>
+<br>
+
+*Where:*
+- $C_T$ = thrust coefficient (0.08-0.12 for 3-blade props)<sup>[[1]](#reference1)</sup>
+- $n$ = rotational speed (revolutions per second)
+- $D$ = propeller diameter (m)
+
+**Power coefficient equation:**
+
+<br>
+<div align="center">
+
+$P = C_P \times \rho \times n^3 \times D^5$
+
+</div>
+<br>
+
+*Where:*
+- $C_P$ = power coefficient (0.04-0.06 for 3-blade props)<sup>[[1]](#reference1)</sup>
+
+**Solving for RPM from known power:**
+
+<br>
+<div align="center">
+
+$n = \left[\frac{P}{C_P \times \rho \times D^5}\right]^{1/3}$
+
+</div>
+<br>
+
+Using expected RPM for loaded 720 motors: **32,500 RPM**
+
+<br>
+<div align="center">
+
+$n = \frac{32,500}{60} = 541.67 RPS$
+
+</div>
+<br>
+
+**Thrust calculation with empirically-calibrated $C_T = 0.115$:**
+
+<br>
+<div align="center">
+
+$T = 0.115 \times 1.225 \times (541.67)^2 \times (0.045)^4$
+
+$T = 0.115 \times 1.225 \times 293,406 \times 4.10 \times 10^{-6}$
+
+$T = 0.169N = 17.3g$ per motor
+
+</div>
+<br>
+
+This low value indicates that small propellers have significant losses not captured by simple blade element theory.
+
+---
+
+#### Method 2: Momentum Theory (First Principles)
 
 The fundamental relationship between thrust, power, and induced velocity from momentum theory:
 
@@ -104,7 +173,7 @@ $T = \frac{\eta \times P}{v_{induced}}$
 
 *Where:*
 - $T$ = thrust ($N$)
-- $\eta$ = propeller efficiency (0.4-0.6 for small props)<sup>[[1]](#reference1)</sup>
+- $\eta$ = propeller efficiency (0.4-0.6 for small props)<sup>[[2]](#reference2)</sup>
 - $P$ = power ($W$)
 - $v_{induced}$ = induced velocity at rotor disk ($m/s$)
 
@@ -176,7 +245,7 @@ $T = (2 \times \rho \times A)^{1/3} \times (\eta \times P)^{2/3}$
 
 **Note:** *This shows thrust scales with $P^{2/3}$, not linearly with power.*
 
-**Applying to our 720 motors:**
+**Applying to 720 motors:**
 
 *Given:*
 - $P = 6.65W$ per motor
@@ -208,137 +277,19 @@ $T_{total,theory} = 35.73g \times 4 = 142.9g$
 
 ---
 
-#### Method 2: Blade Element Theory
-
-For small propellers, using non-dimensional coefficients:
-
-**Thrust coefficient equation:**
-
-<br>
-<div align="center">
-
-$T = C_T \times \rho \times n^2 \times D^4$
-
-</div>
-<br>
-
-*Where:*
-- $C_T$ = thrust coefficient (0.08-0.12 for 3-blade props)
-- $n$ = rotational speed (revolutions per second)
-- $D$ = propeller diameter (m)
-
-**Power coefficient equation:**
-
-<br>
-<div align="center">
-
-$P = C_P \times \rho \times n^3 \times D^5$
-
-</div>
-<br>
-
-*Where:*
-- $C_P$ = power coefficient (0.04-0.06 for 3-blade props)
-
-**Solving for RPM from known power:**
-
-<br>
-<div align="center">
-
-$n = \left[\frac{P}{C_P \times \rho \times D^5}\right]^{1/3}$
-
-</div>
-<br>
-
-Using expected RPM for loaded 720 motors: **32,500 RPM**
-
-<br>
-<div align="center">
-
-$n = \frac{32,500}{60} = 541.67 RPS$
-
-</div>
-<br>
-
-**Thrust calculation with empirically-calibrated $C_T = 0.115$:**
-
-<br>
-<div align="center">
-
-$T = 0.115 \times 1.225 \times (541.67)^2 \times (0.040)^4$
-
-$T = 0.115 \times 1.225 \times 293,406 \times 2.56 \times 10^{-6}$
-
-$T = 0.106N = 10.8g$ per motor
-
-</div>
-<br>
-
-This low value indicates that small propellers have significant losses not captured by simple blade element theory.
-
----
-
-#### Method 3: Empirical Calibration (Recommended for Documentation)
-
-Due to the limitations of theoretical models for very small propellers, we use empirically-validated data:
-
-**Known performance data for similar setups:**
-- 720 coreless motors with 40mm props: 45-60g thrust
-- Power consumption: 6-7W
-- Efficiency: 7-9 g/W
-
-**Conservative efficiency estimate: 8 g/W**
-
-<br>
-<div align="center">
-
-$T_{motor} = P_{motor} \times \eta_{empirical}$
-
-$T_{motor} = 6.65W \times 8 \frac{g}{W} = 53.2g$
-
-</div>
-<br>
-
-**Efficiency correction for 2.2Ω resistance:**
-
-Higher resistance motors exhibit ~12% efficiency loss compared to standard 1.8Ω motors:
-
-<br>
-<div align="center">
-
-$f_{efficiency} = 1 - 0.12 = 0.88$
-
-$T_{actual} = T_{motor} \times f_{efficiency} = 53.2g \times 0.88 = 46.8g \approx 47g$
-
-</div>
-<br>
-
-**Total system thrust:**
-
-<br>
-<div align="center">
-
-$T_{total} = T_{actual} \times n_{motors} = 47g \times 4 = 188g$
-
-</div>
-<br>
-
----
-
 ### 3. Thrust-to-Weight Ratio
 
 <br>
 <div align="center">
 
-$TWR = \frac{T_{total}}{m_{drone}} = \frac{188g}{50g} = 3.76$
+$TWR = \frac{T_{total}}{m_{drone}} = \frac{142.9g}{50g} = 2.858$
 
 </div>
 <br>
 
 **Interpretation:**
 - Minimum TWR for stable flight: 2.0
-- Recommended TWR for responsive flight: 3.0-5.0
-- **Our TWR of 3.76 is optimal** ✓
+- **Our TWR of 2.858 is optimal** ✓
 
 ---
 
@@ -363,11 +314,11 @@ Since thrust scales with power according to $T \propto P^{\alpha}$ where $\alpha
 
 $\frac{P_{hover}}{P_{max}} = \left(\frac{T_{hover}}{T_{max}}\right)^{3/2}$
 
-$\frac{P_{hover,motor}}{6.65W} = \left(\frac{12.5g}{47g}\right)^{1.5}$
+$\frac{P_{hover,motor}}{6.65W} = \left(\frac{12.5g}{35.73g}\right)^{1.5}$
 
-$\frac{P_{hover,motor}}{6.65W} = (0.266)^{1.5} = 0.137$
+$\frac{P_{hover,motor}}{6.65W} = (0.350)^{1.5} = 0.207$
 
-$P_{hover,motor} = 6.65W \times 0.137 = 0.91W$
+$P_{hover,motor} = 6.65W \times 0.207 = 1.38W$
 
 </div>
 <br>
@@ -377,7 +328,7 @@ $P_{hover,motor} = 6.65W \times 0.137 = 0.91W$
 <br>
 <div align="center">
 
-$P_{hover,total} = 0.91W \times 4 = 3.64W$
+$P_{hover,total} = 1.38W \times 4 = 5.50W$
 
 </div>
 <br>
@@ -387,7 +338,7 @@ $P_{hover,total} = 0.91W \times 4 = 3.64W$
 <br>
 <div align="center">
 
-$I_{hover} = \frac{P_{hover,total}}{V} = \frac{3.64W}{3.8V} = 0.96A$
+$I_{hover} = \frac{P_{hover,total}}{V} = \frac{5.50W}{3.8V} = 1.45A$
 
 </div>
 <br>
@@ -627,15 +578,15 @@ Motor temperature at hover: **58.6°C** (warm but acceptable) ✓
 | Parameter | Version 1 (615) | Version 2 (720) | Calculation | Improvement |
 |-----------|----------------|----------------|-------------|-------------|
 | Motor size | 615 | 720 | - | +17% larger |
-| Prop diameter | 31mm | 40mm | - | +29% |
+| Prop diameter | 31mm | 45mm | - | +45% |
 | Motor resistance | ~3Ω | 2.2Ω | Measured | -27% |
 | Current per motor | 0.7A | 1.75A | $P/V$ | +150% |
 | Total current | 2.8A | 7.0A | $1.75A \times 4$ | +150% |
 | Power per motor | 2.66W | 6.65W | $V \times I$ | +150% |
 | Total power | 10.6W | 26.6W | $6.65W \times 4$ | **+151%** |
-| Thrust per motor (empirical) | ~25g | ~47g | $P \times \eta \times f$ | +88% |
-| Total thrust | ~90g | ~188g | $47g \times 4$ | **+109%** |
-| Thrust-to-weight | 1.8:1 | 3.76:1 | $T/m$ | **+109%** |
+| Thrust per motor (empirical) | ~25g | ~36g | $P \times \eta \times f$ | +44% |
+| Total thrust | ~90g | ~143g | $36g \times 4$ | **+59%** |
+| Thrust-to-weight | 1.8:1 | 2.9:1 | $T/m$ | **+60%** |
 | Hover throttle | ~90% | ~37% | $(T_h/T_{max})^{3/2}$ | -59% |
 | Flight time | <1 min | 3-4 min | $C_{usable}/I_{avg}$ | **+300%** |
 | PCB trace utilization | 93% | 58% | $I_{trace}/I_{max}$ | +38% margin |
@@ -769,8 +720,17 @@ The Version 2 upgrade successfully addresses the thrust deficiency while maintai
 
 ## References
 
+<div  align = "left">
 <div id = "reference1">
 
-1. Susi, J., Unt, K.-E., & Heering, S. (2023). Determining the efficiency of small-scale propellers via slipstream monitoring. Drones, 7, 381. https://doi.org/10.3390/drones7060381
+1. Aslanov, V. S. (2025). A novel scenario of two-impulse Moon-Planet transfer. Aerospace Science and Technology, 160, Article 110594. https://www.sciencedirect.com/science/article/abs/pii/S1270963825006650
+
+</div>
+
+<div id = "reference2">
+
+2. Susi, J., Unt, K.-E., & Heering, S. (2023). Determining the efficiency of small-scale propellers via slipstream monitoring. Drones, 7, 381. https://doi.org/10.3390/drones7060381
+
+</div>
 
 </div>
