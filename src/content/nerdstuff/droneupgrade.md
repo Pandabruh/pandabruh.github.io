@@ -120,7 +120,7 @@ $P = C_P \times \rho \times n^3 \times D^5$
 
 **Data Source and Calibration:**
 
-Experimental data from [4]<sup>[[4]](#reference4)</sup> provides $C_T$ and $C_P$ measurements for small propellers operating at low Reynolds numbers. The study tested propellers with diameters from 1.2 in (30 mm) to 2.6 in (66 mm), directly applicable to our 45 mm (1.77 in) propeller.
+Experimental data from [[4]](#reference4) provides $C_T$ and $C_P$ measurements for small propellers operating at low Reynolds numbers. The study tested propellers with diameters from 1.2 in (30 mm) to 2.6 in (66 mm), directly applicable to our 45 mm (1.77 in) propeller.
 
 For propellers in this size range at hover conditions (Re ≈ 20,000-25,000), the experimental data shows approximately constant thrust and power coefficients at higher RPMs.<sup>[[4]](#reference4)</sup>
 
@@ -174,7 +174,7 @@ $P = 1.794 W$ per motor
 
 **Back-calculating effective coefficients:**
 
-The discrepancy indicates our 720 motors use higher-performance propellers than standard OEM drones measured in [4].<sup>[[4]](#reference4)</sup> From our known power (6.65W), we can back-calculate:
+The discrepancy indicates our 720 motors use higher-performance propellers than standard OEM drones measured in [[4]](#reference4). From our known power (6.65W), we can back-calculate:
 
 <br>
 <div align="center">
@@ -208,7 +208,7 @@ $T_{total} = 47.5g \times 4 = 190g$
 </div>
 <br>
 
-**Note:** The experimental data in [4]<sup>[[4]](#reference4)</sup> measures OEM small drone propellers optimized for efficiency. Commercial 45mm replacement propellers often have higher thrust coefficients. Our calculation using actual measured power (6.65W) is more reliable than using conservative thrust coefficient estimates.
+**Note:** The experimental data in [[4]](#reference4) measures OEM small drone propellers optimized for efficiency. Commercial 45mm replacement propellers often have higher thrust coefficients. Our calculation using actual measured power (6.65W) is more reliable than using conservative thrust coefficient estimates.
 
 ---
 
@@ -227,7 +227,7 @@ $TWR = \frac{T_{total}}{m_{drone}} = \frac{190g}{50g} = 3.8$
 **Interpretation:**
 - Minimum TWR for stable flight: 2.0<sup>[[5]](#reference5)</sup>
 - Recommended TWR for agile flight: 3.0-5.0
-- **Our TWR of 3.8 is excellent for responsive, stable flight** ✓
+- **Our TWR of 3.8 is excellent for responsive, stable flight**
 
 ---
 
@@ -325,7 +325,7 @@ $Throttle_{hover} = \sqrt[3]{\frac{P_{hover,actual}}{P_{max}}} = \sqrt[3]{\frac{
 </div>
 <br>
 
-**Hover status:** 57% throttle provides excellent control authority with 43% headroom for corrections ✓
+**Hover status:** 57% throttle provides excellent control authority with 43% headroom for corrections
 
 ---
 
@@ -355,7 +355,7 @@ $I_{max,battery} = Capacity \times C_{rating} = 0.3Ah \times 120 = 36A$
 </div>
 <br>
 
-Our 7A draw is well within limits (19.4% utilization) ✓
+Our 7A draw is well within limits (19.4% utilization)
 
 **Flight time at hover:**
 
@@ -468,7 +468,7 @@ $I_{per\_trace} = \frac{I_{total}}{n_{motors}} = \frac{7.0A}{4} = 1.75A$
 <br>
 <div align="center">
 
-$Margin = \frac{I_{capacity}}{I_{actual}} = \frac{2.97A}{1.75A} = 1.70$ (70% safety margin) ✓
+$Margin = \frac{I_{capacity}}{I_{actual}} = \frac{2.97A}{1.75A} = 1.70$ (70% safety margin)
 
 </div>
 <br>
@@ -492,7 +492,7 @@ $C_{actual} = \frac{I_{draw}}{Capacity} = \frac{7.0A}{0.3Ah} = 23.3C$
 <br>
 <div align="center">
 
-$Margin = \frac{C_{rated}}{C_{actual}} = \frac{120C}{23.3C} = 5.15 \times$ ✓
+$Margin = \frac{C_{rated}}{C_{actual}} = \frac{120C}{23.3C} = 5.15 \times$
 
 </div>
 <br>
@@ -535,7 +535,7 @@ $T_{motor,hover} = T_{ambient} + \Delta T = 30°C + 7.9°C = 37.9°C$
 </div>
 <br>
 
-Motor temperature at hover: **37.9°C** (cool - excellent!) ✓
+Motor temperature at hover: **37.9°C** (cool - excellent!)
 
 **At full throttle:**
 
@@ -579,7 +579,7 @@ This suggests full throttle cannot be sustained continuously, but with airflow c
 | Battery C-rate used | 93% | 19% | $C_{actual}/C_{rated}$ | +74% margin |
 | Motor thermal margin | ~20°C to limit | ~57°C to limit | $T_{limit} - T_{operating}$ | +37°C margin |
 | **Overall Result** |||||
-| Flight capability | Unable to lift | Stable flight | - | ✓ Operational |
+| Flight capability | Unable to lift | Stable flight | - |  Operational |
 
 ---
 
@@ -587,7 +587,7 @@ This suggests full throttle cannot be sustained continuously, but with airflow c
 
 ### Data Basis: Deters et al. (2018)
 
-The thrust calculations are based on experimental data from [4]<sup>[[4]](#reference4)</sup>, who conducted static performance testing of propellers used on nano, micro, and mini quadrotors at the UIUC Aerodynamics Research Laboratory.
+The thrust calculations are based on experimental data from [[4]](#reference4), who conducted static performance testing of propellers used on nano, micro, and mini quadrotors at the UIUC Aerodynamics Research Laboratory.
 
 **Test parameters:**
 - Propeller diameters tested: 1.2 in (30 mm) to 2.6 in (66 mm)
@@ -601,7 +601,7 @@ The thrust calculations are based on experimental data from [4]<sup>[[4]](#refer
 
 **Validation:**
 
-Reference [4]<sup>[[4]](#reference4)</sup> reports that thrust and power coefficients remain approximately constant at higher RPMs for small propellers in this size range. Our calculation method:
+Reference [[4]](#reference4) reports that thrust and power coefficients remain approximately constant at higher RPMs for small propellers in this size range. Our calculation method:
 
 1. Back-calculated effective power coefficient from measured electrical power (6.65W)
 2. Used momentum theory to find thrust from this power
