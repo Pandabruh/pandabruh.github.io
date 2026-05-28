@@ -1,7 +1,7 @@
 ---
-title: Why should the IMU be at the COG?
-description: yes
-date: 2026-01-04
-tag: Physics
+title: Drone - V2 upgrade documentation
+description: Resolve insufficient thrust issue from V1 by upgrading to higher-power motors and larger propellers
+date: 2026-05-24
+tag: Engineering
 duration: 20min
 ---
