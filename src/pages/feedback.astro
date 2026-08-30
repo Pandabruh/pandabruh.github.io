@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style is:global>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
       :root {
         --bg-color: #fff0f5;
         --card-bg: #ffffff;
@@ -25,25 +29,22 @@
         background-color: var(--bg-color);
         color: var(--text);
         margin: 0;
+        padding: 20px 16px;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
       }
 
       .card {
         background: var(--card-bg);
-        border-radius: 24px;
-        padding: 32px;
+        border-radius: 20px;
+        padding: 24px 20px;
         max-width: 480px;
         width: 100%;
-        box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
+        box-shadow: 0 8px 20px rgba(255, 105, 180, 0.15);
         border: 2px solid #ffe4e1;
         text-align: center;
-        position: relative;
-        overflow: hidden;
       }
 
       h1, h2, h3 {
@@ -54,69 +55,75 @@
 
       input[type="text"], input[type="number"], select {
         width: 100%;
-        padding: 14px 16px;
+        padding: 14px;
         margin: 8px 0 6px;
         border: 2px solid #ffd1dc;
         border-radius: 12px;
         font-family: inherit;
         font-size: 16px;
-        box-sizing: border-box;
-        outline: none;
-        background: white;
+        background-color: #ffffff;
+        color: #4a4a4a;
+        -webkit-appearance: none;
       }
 
       input:focus, select:focus {
         border-color: var(--primary);
+        outline: none;
       }
 
       .hint-text {
         font-size: 13px;
-        color: #888;
+        color: #888888;
         margin-top: 0;
         margin-bottom: 14px;
       }
 
+      /* Base button rules to guarantee 100% visibility on all screens */
       button {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        padding: 14px 24px;
+        background-color: #ff69b4 !important;
+        color: #ffffff !important;
+        border: none !important;
+        padding: 14px 16px;
         font-size: 16px;
+        font-weight: 600;
         font-family: 'Fredoka', sans-serif;
         border-radius: 12px;
         cursor: pointer;
-        transition: transform 0.15s ease, background-color 0.2s, opacity 0.2s;
         width: 100%;
         margin-top: 10px;
-        box-sizing: border-box;
+        display: block;
+        opacity: 1 !important;
+        visibility: visible !important;
+        -webkit-appearance: none;
+        appearance: none;
       }
 
-      button:hover:not(:disabled) {
-        background-color: var(--primary-hover);
-      }
-
-      button:disabled {
-        background-color: #cccccc !important;
-        color: #888888 !important;
-        cursor: not-allowed !important;
-        transform: none !important;
-        box-shadow: none !important;
-        opacity: 0.6;
+      button:hover {
+        background-color: #ff1493 !important;
+        color: #ffffff !important;
       }
 
       .btn-group {
         display: flex;
         gap: 10px;
-        margin-top: 10px;
+        margin-top: 16px;
+        width: 100%;
       }
 
+      .btn-group button {
+        flex: 1;
+        margin-top: 0;
+      }
+
+      /* Secondary button style (Back buttons) */
       .secondary-btn {
-        background-color: #ffd1dc;
-        color: var(--text);
+        background-color: #ffd1dc !important;
+        color: #4a4a4a !important;
       }
 
-      .secondary-btn:hover:not(:disabled) {
-        background-color: #ffb6c1;
+      .secondary-btn:hover {
+        background-color: #ffb6c1 !important;
+        color: #4a4a4a !important;
       }
 
       #options-container {
@@ -125,30 +132,27 @@
         gap: 10px;
         margin: 16px 0;
         width: 100%;
-        box-sizing: border-box;
       }
 
+      /* Option choice buttons */
       .option-btn {
-        background-color: #fffafc;
-        color: var(--text);
-        border: 2px solid #ffd1dc;
+        background-color: #fffafc !important;
+        color: #4a4a4a !important;
+        border: 2px solid #ffd1dc !important;
         text-align: left;
-        margin-bottom: 0;
-        transition: all 0.2s ease;
+        margin-top: 0;
+        font-family: 'Quicksand', sans-serif;
       }
 
       .option-btn:hover {
-        background-color: #ffe4e1;
-        color: var(--text);
+        background-color: #ffe4e1 !important;
       }
 
       .option-btn.selected {
         background-color: #ff69b4 !important;
         color: #ffffff !important;
-        border: 3px solid #ff1493 !important;
-        font-weight: bold !important;
-        box-shadow: 0 4px 12px rgba(255, 20, 147, 0.4);
-        transform: scale(1.02);
+        border-color: #ff1493 !important;
+        font-weight: bold;
       }
 
       .hidden {
@@ -158,15 +162,16 @@
       .error-msg {
         color: var(--error);
         font-size: 14px;
-        margin-top: -8px;
-        margin-bottom: 12px;
+        font-weight: 600;
+        margin-top: 8px;
+        margin-bottom: 4px;
       }
 
       .progress-bar {
         height: 8px;
         background-color: #ffe4e1;
         border-radius: 4px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         overflow: hidden;
       }
 
@@ -174,14 +179,13 @@
         height: 100%;
         background-color: var(--primary);
         width: 0%;
-        transition: width 0.3s ease;
       }
 
       .meter-box {
-        font-size: 32px;
+        font-size: 28px;
         font-weight: bold;
         color: var(--primary);
-        padding: 20px;
+        padding: 16px;
         background: #fff0f5;
         border-radius: 16px;
         margin: 16px 0;
@@ -189,16 +193,17 @@
       }
 
       .luck-quote {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         color: #ff1493;
-        margin-top: 8px;
+        margin-top: 6px;
         font-style: italic;
       }
     </style>
   </head>
   <body>
     <div class="card">
+      <!-- Login Section -->
       <div id="login-section">
         <p>Please enter your credentials to unlock the quiz</p>
         <br />
@@ -212,21 +217,24 @@
           <p class="hint-text">Hint: sausage devourer, 13 characters (no spaces)</p>
         </div>
         <p id="error-text" class="error-msg hidden">Incorrect username or password!</p>
-        <button id="login-btn">Unlock 🎁</button>
+        <button id="login-btn" type="button">Unlock 🎁</button>
       </div>
 
+      <!-- Quiz Section -->
       <div id="quiz-section" class="hidden">
         <div class="progress-bar">
           <div id="progress" class="progress-fill"></div>
         </div>
         <h2 id="question-text">Question goes here</h2>
         <div id="options-container"></div>
+        <p id="quiz-error" class="error-msg hidden">⚠️ Please select or type an answer first!</p>
         <div class="btn-group">
           <button id="quiz-back-btn" class="secondary-btn hidden" type="button">↩ Back</button>
-          <button id="quiz-next-btn" type="button" disabled>Next Question ➔</button>
+          <button id="quiz-next-btn" type="button">Next Question ➔</button>
         </div>
       </div>
 
+      <!-- Score Section -->
       <div id="score-section" class="hidden">
         <h1>🏆 Quiz Complete!</h1>
         <h2 id="score-text">You scored 0/0!</h2>
@@ -238,23 +246,28 @@
         <p>Click below to roll for your guaranteed luck score this year!</p>
 
         <div id="meter-display" class="meter-box">? / 10</div>
-        <button id="roll-btn">Roll Luck Meter 🎲</button>
+        <button id="roll-btn" type="button">Roll Luck Meter 🎲</button>
 
-        <button id="continue-btn" class="hidden" style="margin-top: 15px; background-color: #32cd32;">
+        <button id="continue-btn" class="hidden" type="button" style="margin-top: 15px; background-color: #32cd32 !important;">
           Continue to Feedback ➔
         </button>
       </div>
 
+      <!-- Rating Section -->
       <div id="rating-section" class="hidden">
         <h2>⭐ Final Question!</h2>
         <p>Rate the quiz maker (me) out of 10:</p>
         <input type="number" id="rating-input" placeholder="Enter a rating (e.g. 10)" min="0" max="100" />
 
-        <button id="rate-btn" style="margin-top: 15px;" disabled>Submit Rating</button>
-        <p id="rating-hint" style="font-size: 13px; color: #888; margin-top: 10px;"></p>
-        <button id="rating-back-btn" class="secondary-btn" style="margin-top: 10px;">↩ Back</button>
+        <p id="rating-hint" class="error-msg hidden"></p>
+
+        <div class="btn-group">
+          <button id="rating-back-btn" class="secondary-btn" type="button">↩ Back</button>
+          <button id="rate-btn" type="button">Submit Rating</button>
+        </div>
       </div>
 
+      <!-- Final Reveal Section -->
       <div id="reveal-section" class="hidden">
         <h1>🎉 Happy Birthday ZhengYan! 🎉</h1>
         <div style="margin-top: 20px; padding: 20px; background-color: #fff0f5; border-radius: 16px; text-align: left;">
@@ -346,6 +359,7 @@ const loginBtn = document.getElementById('login-btn')
 const errorText = document.getElementById('error-text')
 const questionText = document.getElementById('question-text')
 const optionsContainer = document.getElementById('options-container')
+const quizError = document.getElementById('quiz-error')
 const quizNextBtn = document.getElementById('quiz-next-btn')
 const quizBackBtn = document.getElementById('quiz-back-btn')
 const ratingBackBtn = document.getElementById('rating-back-btn')
@@ -376,6 +390,7 @@ function loadQuestion() {
   questionText.textContent = q.question
   optionsContainer.innerHTML = ''
   selectedChoice = null
+  quizError.classList.add('hidden')
 
   const pct = (currentQuestion / questions.length) * 100
   progress.style.width = `${pct}%`
@@ -395,7 +410,6 @@ function loadQuestion() {
   }
 
   const prevAnswer = savedAnswers[currentQuestion]
-  quizNextBtn.disabled = true
 
   if (q.type === 'choice') {
     q.options.forEach((opt, idx) => {
@@ -407,14 +421,13 @@ function loadQuestion() {
       if (prevAnswer === opt) {
         btn.classList.add('selected')
         selectedChoice = idx
-        quizNextBtn.disabled = false
       }
 
       btn.addEventListener('click', () => {
         document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'))
         btn.classList.add('selected')
         selectedChoice = idx
-        quizNextBtn.disabled = false
+        quizError.classList.add('hidden')
       })
       optionsContainer.appendChild(btn)
     })
@@ -437,13 +450,13 @@ function loadQuestion() {
       option.textContent = opt
       if (prevAnswer === opt) {
         option.selected = true
-        quizNextBtn.disabled = false
       }
       select.appendChild(option)
     })
 
     select.addEventListener('change', () => {
-      quizNextBtn.disabled = !select.value
+      if (select.value)
+        quizError.classList.add('hidden')
     })
 
     optionsContainer.appendChild(select)
@@ -455,11 +468,11 @@ function loadQuestion() {
     input.placeholder = q.placeholder || 'Type your answer here...'
     if (prevAnswer) {
       input.value = prevAnswer
-      quizNextBtn.disabled = false
     }
 
     input.addEventListener('input', () => {
-      quizNextBtn.disabled = input.value.trim() === ''
+      if (input.value.trim() !== '')
+        quizError.classList.add('hidden')
     })
 
     optionsContainer.appendChild(input)
@@ -483,23 +496,33 @@ quizNextBtn.addEventListener('click', () => {
   let recordedVal = ''
 
   if (q.type === 'choice') {
-    if (selectedChoice === null)
+    if (selectedChoice === null) {
+      quizError.textContent = '⚠️ Please select an option first!'
+      quizError.classList.remove('hidden')
       return
+    }
     recordedVal = q.options[selectedChoice]
   }
   else if (q.type === 'dropdown') {
     const select = document.getElementById('active-select')
-    if (!select || !select.value)
+    if (!select || !select.value) {
+      quizError.textContent = '⚠️ Please select an option from the dropdown!'
+      quizError.classList.remove('hidden')
       return
+    }
     recordedVal = select.value
   }
   else if (q.type === 'text') {
     const input = document.getElementById('active-input')
-    if (!input || !input.value.trim())
+    if (!input || !input.value.trim()) {
+      quizError.textContent = '⚠️ Please type an answer first!'
+      quizError.classList.remove('hidden')
       return
+    }
     recordedVal = input.value.trim()
   }
 
+  quizError.classList.add('hidden')
   savedAnswers[currentQuestion] = recordedVal
 
   currentQuestion++
@@ -599,19 +622,26 @@ const ratingInput = document.getElementById('rating-input')
 const rateBtn = document.getElementById('rate-btn')
 const ratingHint = document.getElementById('rating-hint')
 
-ratingInput.addEventListener('input', () => {
+rateBtn.addEventListener('click', () => {
   const val = Number.parseFloat(ratingInput.value)
-  if (ratingInput.value.trim() === '') {
-    rateBtn.disabled = true
-    ratingHint.textContent = ''
+  if (ratingInput.value.trim() === '' || Number.isNaN(val)) {
+    ratingHint.textContent = '⚠️ Please enter a rating first!'
+    ratingHint.classList.remove('hidden')
+    return
   }
-  else if (Number.isNaN(val) || val < 10) {
-    rateBtn.disabled = true
-    ratingHint.textContent = '⚠️ Error: System requires a rating of 10 or higher!'
+  if (val < 10) {
+    ratingHint.textContent = '⚠️ Rating must be 10 or higher!'
+    ratingHint.classList.remove('hidden')
+    return
   }
-  else {
-    rateBtn.disabled = false
-    ratingHint.textContent = '✨ Perfect rating detected!'
+
+  sendResponsesToDiscord()
+
+  ratingSection.classList.add('hidden')
+  revealSection.classList.remove('hidden')
+
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } })
   }
 })
 
@@ -643,17 +673,6 @@ function sendResponsesToDiscord() {
     }),
   }).catch(err => console.error('Webhook error:', err))
 }
-
-rateBtn.addEventListener('click', () => {
-  sendResponsesToDiscord()
-
-  ratingSection.classList.add('hidden')
-  revealSection.classList.remove('hidden')
-
-  if (typeof confetti === 'function') {
-    confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } })
-  }
-})
 </script>
   </body>
 </html>
