@@ -1,0 +1,626 @@
+---
+// src/pages/bdayquiz.astro
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Birthday Quiz! 🎂</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style is:global>
+      :root {
+        --bg-color: #fff0f5;
+        --card-bg: #ffffff;
+        --primary: #ff69b4;
+        --primary-hover: #ff1493;
+        --text: #4a4a4a;
+        --error: #ff4d4d;
+      }
+
+      body {
+        font-family: 'Quicksand', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 32px;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
+        border: 2px solid #ffe4e1;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      h1, h2, h3 {
+        font-family: 'Fredoka', sans-serif;
+        color: var(--primary);
+        margin-top: 0;
+      }
+
+      input[type="text"], input[type="number"], select {
+        width: 100%;
+        padding: 14px 16px;
+        margin: 8px 0 6px;
+        border: 2px solid #ffd1dc;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 16px;
+        box-sizing: border-box;
+        outline: none;
+        background: white;
+      }
+
+      input:focus, select:focus {
+        border-color: var(--primary);
+      }
+
+      .hint-text {
+        font-size: 13px;
+        color: #888;
+        margin-top: 0;
+        margin-bottom: 14px;
+      }
+
+      button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 14px 24px;
+        font-size: 16px;
+        font-family: 'Fredoka', sans-serif;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.15s ease, background-color 0.2s;
+        width: 100%;
+        margin-top: 10px;
+        box-sizing: border-box;
+      }
+
+      button:hover {
+        background-color: var(--primary-hover);
+      }
+
+      #options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 16px 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .option-btn {
+        background-color: #fffafc;
+        color: var(--text);
+        border: 2px solid #ffd1dc;
+        text-align: left;
+        margin-bottom: 0;
+        transition: all 0.2s ease;
+      }
+
+      .option-btn:hover {
+        background-color: #ffe4e1;
+        color: var(--text);
+      }
+
+      .option-btn.selected {
+        background-color: #ff69b4 !important;
+        color: #ffffff !important;
+        border: 3px solid #ff1493 !important;
+        font-weight: bold !important;
+        box-shadow: 0 4px 12px rgba(255, 20, 147, 0.4);
+        transform: scale(1.02);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .error-msg {
+        color: var(--error);
+        font-size: 14px;
+        margin-top: -8px;
+        margin-bottom: 12px;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: #ffe4e1;
+        border-radius: 4px;
+        margin-bottom: 24px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--primary);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .meter-box {
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--primary);
+        padding: 20px;
+        background: #fff0f5;
+        border-radius: 16px;
+        margin: 16px 0;
+        border: 2px dashed #ffb6c1;
+      }
+
+      .luck-quote {
+        font-size: 16px;
+        font-weight: 600;
+        color: #ff1493;
+        margin-top: 8px;
+        font-style: italic;
+      }
+
+      .evade-container {
+        position: relative;
+        min-height: 60px;
+        margin-top: 15px;
+      }
+
+      #rate-btn {
+        position: relative;
+        transition: transform 0.15s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div id="login-section">
+        <p>Please enter your credentials to unlock the quiz</p>
+        <br />
+        <div style="text-align: left;">
+          <label for="username"><b>Username</b></label>
+          <input type="text" id="username" placeholder="Enter username..." />
+          <p class="hint-text">Hint: 4 letters</p>
+
+          <label for="password"><b>Password</b></label>
+          <input type="text" id="password" placeholder="Enter password..." />
+          <p class="hint-text">Hint: sausage devourer, 13 characters (no spaces)</p>
+        </div>
+        <p id="error-text" class="error-msg hidden">Incorrect username or password!</p>
+        <button id="login-btn">Unlock 🎁</button>
+      </div>
+
+      <div id="quiz-section" class="hidden">
+        <div class="progress-bar">
+          <div id="progress" class="progress-fill"></div>
+        </div>
+        <h2 id="question-text">Question goes here</h2>
+        <div id="options-container"></div>
+        <button id="quiz-next-btn">Next Question ➔</button>
+      </div>
+
+      <div id="score-section" class="hidden">
+        <h1>🏆 Quiz Complete!</h1>
+        <h2 id="score-text">You scored 0/0!</h2>
+        <p id="score-comment" style="font-size: 18px; font-weight: 600; color: #ff1493;"></p>
+
+        <hr style="border: 1px dashed #ffd1dc; margin: 20px 0;" />
+
+        <h3>✨ Your Luck & Happiness Meter ✨</h3>
+        <p>Click below to roll for your guaranteed luck score this year!</p>
+
+        <div id="meter-display" class="meter-box">? / 10</div>
+        <button id="roll-btn">Roll Luck Meter 🎲</button>
+
+        <button id="continue-btn" class="hidden" style="margin-top: 15px; background-color: #32cd32;">
+          Continue to Feedback ➔
+        </button>
+      </div>
+
+      <div id="rating-section" class="hidden">
+        <h2>⭐ Final Question!</h2>
+        <p>Rate the quiz maker (me) out of 10:</p>
+        <input type="number" id="rating-input" placeholder="Enter a rating (e.g. 10)" min="0" max="100" />
+
+        <div class="evade-container">
+          <button id="rate-btn">Submit Rating</button>
+        </div>
+        <p id="rating-hint" style="font-size: 13px; color: #888; margin-top: 10px;"></p>
+      </div>
+
+      <div id="reveal-section" class="hidden">
+        <h1>🎉 Happy Birthday ZhengYan! 🎉</h1>
+        <div style="margin-top: 20px; padding: 20px; background-color: #fff0f5; border-radius: 16px; text-align: left;">
+          <p>You unlocked legendary luck and I hope u gave me a good rating boi 😂</p>
+          <p>Happy flippin womb eviction day mate, hope u have a damn good day!</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+// ==========================================
+// CONFIGURATION & WEBHOOK SETTINGS
+// ==========================================
+const VALID_USER = 'lizy'
+const VALID_PASS = 'glizzymuncher'
+
+const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1543649122324582410/-RRJUWUgaHuO-vlGY5q21Va8EUWS98dFTa3kLNj12pr5Kuiif7qoQvrnXUUgLooOF-ZQ'
+
+const questions = [
+  {
+    type: 'text',
+    question: 'What is your favourite food?',
+    placeholder: 'Type your favourite food here...',
+  },
+  {
+    type: 'dropdown',
+    question: 'What day was it on 31st August 2008?',
+    options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    answer: 'Sunday',
+  },
+  {
+    type: 'choice',
+    question: 'How many times must zy go to Nam Kee per week?',
+    options: ['1-2', '3-4', 'Everyday'],
+    answer: 2,
+  },
+  {
+    type: 'choice',
+    question: 'What is zy\'s most dangerous habit?',
+    options: [
+      'Leaving messages on sent for 7 business days',
+      'Locking in for godly amounts of time',
+      'Scrolling reels until 1 AM',
+      'All of the above',
+    ],
+    answer: 3,
+  },
+  {
+    type: 'choice',
+    question: 'If zy was wanted by the police, what would it be for?',
+    options: [
+      'Liking down syndrome reels',
+      'Eating popiah at Hom Aroy',
+      'Being a terrorist??',
+      'Skipping PE lessons',
+    ],
+    answer: 'any',
+  },
+]
+
+const milestoneQuotes: Record<number, string> = {
+  10: '“Pretty lucky!”',
+  11: '“Okay???”',
+  12: '“This shouldn\'t be possible.”',
+  15: '“Please stop.”',
+  20: '“wtf is happening??”',
+  50: '“You have broken the website.”',
+  100: '“????????„',
+}
+
+let currentQuestion = 0
+let score = 0
+let currentLuckScore = 9
+let lastActiveQuote = ''
+let selectedChoice = null
+
+// Track responses
+const userAnswers: Record<string, string> = {}
+
+// Element References
+const loginSection = document.getElementById('login-section')
+const quizSection = document.getElementById('quiz-section')
+const scoreSection = document.getElementById('score-section')
+const ratingSection = document.getElementById('rating-section')
+const revealSection = document.getElementById('reveal-section')
+
+const loginBtn = document.getElementById('login-btn')
+const errorText = document.getElementById('error-text')
+const questionText = document.getElementById('question-text')
+const optionsContainer = document.getElementById('options-container')
+const quizNextBtn = document.getElementById('quiz-next-btn')
+const progress = document.getElementById('progress')
+
+// 1. LOGIN LOGIC
+loginBtn.addEventListener('click', () => {
+  const user = (document.getElementById('username') as HTMLInputElement).value.trim()
+  const pass = (document.getElementById('password') as HTMLInputElement).value.trim()
+
+  if (user === VALID_USER && pass === VALID_PASS) {
+    loginSection.classList.add('hidden')
+    quizSection.classList.remove('hidden')
+    loadQuestion()
+  }
+  else {
+    errorText.classList.remove('hidden')
+  }
+})
+
+// 2. QUIZ LOGIC
+function loadQuestion() {
+  const q = questions[currentQuestion]
+  questionText.textContent = q.question
+  optionsContainer.innerHTML = ''
+  selectedChoice = null
+
+  const pct = (currentQuestion / questions.length) * 100
+  progress.style.width = `${pct}%`
+
+  if (currentQuestion === questions.length - 1) {
+    quizNextBtn.textContent = 'Submit Quiz ➔'
+  }
+  else {
+    quizNextBtn.textContent = 'Next Question ➔'
+  }
+
+  if (q.type === 'choice') {
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button')
+      btn.className = 'option-btn'
+      btn.textContent = opt
+      btn.type = 'button'
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'))
+        btn.classList.add('selected')
+        selectedChoice = idx
+      })
+      optionsContainer.appendChild(btn)
+    })
+  }
+  else if (q.type === 'dropdown') {
+    const select = document.createElement('select')
+    select.id = 'active-select'
+
+    const defaultOpt = document.createElement('option')
+    defaultOpt.value = ''
+    defaultOpt.textContent = '-- Select an answer --'
+    defaultOpt.disabled = true
+    defaultOpt.selected = true
+    select.appendChild(defaultOpt)
+
+    q.options.forEach((opt) => {
+      const option = document.createElement('option')
+      option.value = opt
+      option.textContent = opt
+      select.appendChild(option)
+    })
+    optionsContainer.appendChild(select)
+  }
+  else if (q.type === 'text') {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.id = 'active-input'
+    input.placeholder = q.placeholder || 'Type your answer here...'
+    optionsContainer.appendChild(input)
+  }
+}
+
+quizNextBtn.addEventListener('click', () => {
+  const q = questions[currentQuestion]
+  let isCorrect = false
+  let recordedVal = ''
+
+  if (q.type === 'choice') {
+    if (selectedChoice === null) {
+      // eslint-disable-next-line no-alert
+      alert('Please select an option!')
+      return
+    }
+    isCorrect = (q.answer === 'any' || selectedChoice === q.answer)
+    recordedVal = q.options[selectedChoice]
+  }
+  else if (q.type === 'dropdown') {
+    const select = document.getElementById('active-select') as HTMLSelectElement
+    if (!select || !select.value) {
+      // eslint-disable-next-line no-alert
+      alert('Please select an answer from the dropdown!')
+      return
+    }
+    isCorrect = (select.value === q.answer)
+    recordedVal = select.value
+  }
+  else if (q.type === 'text') {
+    const input = document.getElementById('active-input') as HTMLInputElement
+    if (!input || !input.value.trim()) {
+      // eslint-disable-next-line no-alert
+      alert('Please type an answer!')
+      return
+    }
+    isCorrect = true
+    recordedVal = input.value.trim()
+  }
+
+  userAnswers[`Q${currentQuestion + 1}: ${q.question}`] = recordedVal
+
+  if (isCorrect)
+    score++
+
+  currentQuestion++
+  if (currentQuestion < questions.length) {
+    loadQuestion()
+  }
+  else {
+    showScoreScreen()
+  }
+})
+
+// 3. SCORE & INCREMENTAL LUCK METER LOGIC
+function showScoreScreen() {
+  quizSection.classList.add('hidden')
+  scoreSection.classList.remove('hidden')
+
+  document.getElementById('score-text').textContent = `You scored ${score}/${questions.length}!`
+
+  const scoreComment = document.getElementById('score-comment')
+  if (scoreComment) {
+    if (score <= 2) {
+      scoreComment.textContent = 'bro do u even know urself 😭'
+    }
+    else if (score <= 4) {
+      scoreComment.textContent = 'not bad'
+    }
+    else {
+      scoreComment.textContent = 'passed with flying colours!'
+    }
+  }
+
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } })
+  }
+}
+
+const rollBtn = document.getElementById('roll-btn')
+const meterDisplay = document.getElementById('meter-display')
+const continueBtn = document.getElementById('continue-btn')
+
+rollBtn.addEventListener('click', () => {
+  currentLuckScore++
+
+  if (milestoneQuotes[currentLuckScore]) {
+    lastActiveQuote = milestoneQuotes[currentLuckScore]
+  }
+
+  let counter = 0
+  const interval = setInterval(() => {
+    const randomVal = Math.floor(Math.random() * 9) + 1
+    meterDisplay.textContent = `${randomVal} / 10`
+    counter++
+
+    if (counter > 8) {
+      clearInterval(interval)
+
+      meterDisplay.innerHTML = `
+              <div>${currentLuckScore} / 10 🔥</div>
+              ${lastActiveQuote ? `<div class="luck-quote">${lastActiveQuote}</div>` : ''}
+            `
+
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } })
+      }
+
+      continueBtn.classList.remove('hidden')
+    }
+  }, 60)
+})
+
+continueBtn.addEventListener('click', () => {
+  scoreSection.classList.add('hidden')
+  ratingSection.classList.remove('hidden')
+})
+
+// 4. ESCAPING RATING BUTTON & WEBHOOK SEND LOGIC
+const ratingInput = document.getElementById('rating-input') as HTMLInputElement
+const rateBtn = document.getElementById('rate-btn')
+const ratingHint = document.getElementById('rating-hint')
+
+function hasInputted() {
+  return ratingInput.value.trim() !== ''
+}
+
+function isRatingValid() {
+  const val = Number.parseFloat(ratingInput.value)
+  return !Number.isNaN(val) && val >= 10
+}
+
+function evadeButton() {
+  if (hasInputted() && !isRatingValid()) {
+    const randomX = (Math.random() - 0.5) * 220
+    const randomY = (Math.random() - 0.5) * 80
+    rateBtn.style.transform = `translate(${randomX}px, ${randomY}px)`
+    ratingHint.textContent = '⚠️ Error: System requires a rating of 10 or higher!'
+  }
+  else {
+    rateBtn.style.transform = 'translate(0px, 0px)'
+    if (hasInputted() && isRatingValid()) {
+      ratingHint.textContent = '✨ Perfect rating detected!'
+    }
+    else {
+      ratingHint.textContent = ''
+    }
+  }
+}
+
+function sendResponsesToDiscord() {
+  if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('YOUR_DISCORD_WEBHOOK'))
+    return
+
+  const fields = [
+    ...Object.keys(userAnswers).map(key => ({
+      name: key,
+      value: userAnswers[key] || 'No answer',
+      inline: false,
+    })),
+    { name: '🏆 Quiz Score', value: `${score}/${questions.length}`, inline: true },
+    { name: '🎲 Final Luck Score Roll', value: `${currentLuckScore}/10`, inline: true },
+    { name: '⭐ Rating Given', value: `${ratingInput.value}/10`, inline: true },
+  ]
+
+  fetch(DISCORD_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      embeds: [{
+        title: '🎉 ZhengYan Completed the Birthday Quiz!',
+        color: 16738740, // Pink
+        fields,
+        timestamp: new Date().toISOString(),
+      }],
+    }),
+  }).catch(err => console.error('Webhook error:', err))
+}
+
+rateBtn.addEventListener('mouseenter', () => {
+  if (hasInputted()) {
+    evadeButton()
+  }
+})
+
+rateBtn.addEventListener('click', (e) => {
+  if (!hasInputted()) {
+    e.preventDefault()
+    ratingHint.textContent = '⚠️ Please enter a rating first!'
+    return
+  }
+
+  if (!isRatingValid()) {
+    e.preventDefault()
+    evadeButton()
+  }
+  else {
+    // Send all answers to Discord before showing reveal section
+    sendResponsesToDiscord()
+
+    ratingSection.classList.add('hidden')
+    revealSection.classList.remove('hidden')
+
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } })
+    }
+  }
+})
+
+ratingInput.addEventListener('input', () => {
+  if (isRatingValid()) {
+    rateBtn.style.transform = 'translate(0px, 0px)'
+    ratingHint.textContent = '✨ Perfect rating detected!'
+  }
+  else if (!hasInputted()) {
+    rateBtn.style.transform = 'translate(0px, 0px)'
+    ratingHint.textContent = ''
+  }
+})
+</script>
+  </body>
+</html>
