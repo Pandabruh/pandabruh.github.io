@@ -85,14 +85,23 @@
         font-family: 'Fredoka', sans-serif;
         border-radius: 12px;
         cursor: pointer;
-        transition: transform 0.15s ease, background-color 0.2s;
+        transition: transform 0.15s ease, background-color 0.2s, opacity 0.2s;
         width: 100%;
         margin-top: 10px;
         box-sizing: border-box;
       }
 
-      button:hover {
+      button:hover:not(:disabled) {
         background-color: var(--primary-hover);
+      }
+
+      button:disabled {
+        background-color: #cccccc !important;
+        color: #888888 !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+        box-shadow: none !important;
+        opacity: 0.6;
       }
 
       .btn-group {
@@ -106,7 +115,7 @@
         color: var(--text);
       }
 
-      .secondary-btn:hover {
+      .secondary-btn:hover:not(:disabled) {
         background-color: #ffb6c1;
       }
 
@@ -186,17 +195,6 @@
         margin-top: 8px;
         font-style: italic;
       }
-
-      .evade-container {
-        position: relative;
-        min-height: 60px;
-        margin-top: 15px;
-      }
-
-      #rate-btn {
-        position: relative;
-        transition: transform 0.15s ease;
-      }
     </style>
   </head>
   <body>
@@ -225,7 +223,7 @@
         <div id="options-container"></div>
         <div class="btn-group">
           <button id="quiz-back-btn" class="secondary-btn hidden" type="button">↩ Back</button>
-          <button id="quiz-next-btn" type="button">Next Question ➔</button>
+          <button id="quiz-next-btn" type="button" disabled>Next Question ➔</button>
         </div>
       </div>
 
@@ -252,9 +250,7 @@
         <p>Rate the quiz maker (me) out of 10:</p>
         <input type="number" id="rating-input" placeholder="Enter a rating (e.g. 10)" min="0" max="100" />
 
-        <div class="evade-container">
-          <button id="rate-btn">Submit Rating</button>
-        </div>
+        <button id="rate-btn" style="margin-top: 15px;" disabled>Submit Rating</button>
         <p id="rating-hint" style="font-size: 13px; color: #888; margin-top: 10px;"></p>
         <button id="rating-back-btn" class="secondary-btn" style="margin-top: 10px;">↩ Back</button>
       </div>
@@ -263,13 +259,12 @@
         <h1>🎉 Happy Birthday ZhengYan! 🎉</h1>
         <div style="margin-top: 20px; padding: 20px; background-color: #fff0f5; border-radius: 16px; text-align: left;">
           <p>You unlocked legendary luck and I hope u gave me a good rating boi 😂</p>
-          <p>Happy flippin womb eviction day mate, hope u have an elite day!</p>
+          <p>Happy flippin womb eviction day mate, hope u have a damn good day!</p>
         </div>
       </div>
     </div>
 
     <script>
-/* eslint-disable no-alert */
 const VALID_USER = 'lizy'
 const VALID_PASS = 'glizzymuncher'
 
@@ -400,6 +395,7 @@ function loadQuestion() {
   }
 
   const prevAnswer = savedAnswers[currentQuestion]
+  quizNextBtn.disabled = true
 
   if (q.type === 'choice') {
     q.options.forEach((opt, idx) => {
@@ -411,12 +407,14 @@ function loadQuestion() {
       if (prevAnswer === opt) {
         btn.classList.add('selected')
         selectedChoice = idx
+        quizNextBtn.disabled = false
       }
 
       btn.addEventListener('click', () => {
         document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'))
         btn.classList.add('selected')
         selectedChoice = idx
+        quizNextBtn.disabled = false
       })
       optionsContainer.appendChild(btn)
     })
@@ -437,10 +435,17 @@ function loadQuestion() {
       const option = document.createElement('option')
       option.value = opt
       option.textContent = opt
-      if (prevAnswer === opt)
+      if (prevAnswer === opt) {
         option.selected = true
+        quizNextBtn.disabled = false
+      }
       select.appendChild(option)
     })
+
+    select.addEventListener('change', () => {
+      quizNextBtn.disabled = !select.value
+    })
+
     optionsContainer.appendChild(select)
   }
   else if (q.type === 'text') {
@@ -448,8 +453,15 @@ function loadQuestion() {
     input.type = 'text'
     input.id = 'active-input'
     input.placeholder = q.placeholder || 'Type your answer here...'
-    if (prevAnswer)
+    if (prevAnswer) {
       input.value = prevAnswer
+      quizNextBtn.disabled = false
+    }
+
+    input.addEventListener('input', () => {
+      quizNextBtn.disabled = input.value.trim() === ''
+    })
+
     optionsContainer.appendChild(input)
   }
 }
@@ -471,26 +483,20 @@ quizNextBtn.addEventListener('click', () => {
   let recordedVal = ''
 
   if (q.type === 'choice') {
-    if (selectedChoice === null) {
-      alert('Please select an option!')
+    if (selectedChoice === null)
       return
-    }
     recordedVal = q.options[selectedChoice]
   }
   else if (q.type === 'dropdown') {
     const select = document.getElementById('active-select')
-    if (!select || !select.value) {
-      alert('Please select an answer from the dropdown!')
+    if (!select || !select.value)
       return
-    }
     recordedVal = select.value
   }
   else if (q.type === 'text') {
     const input = document.getElementById('active-input')
-    if (!input || !input.value.trim()) {
-      alert('Please type an answer!')
+    if (!input || !input.value.trim())
       return
-    }
     recordedVal = input.value.trim()
   }
 
@@ -593,32 +599,21 @@ const ratingInput = document.getElementById('rating-input')
 const rateBtn = document.getElementById('rate-btn')
 const ratingHint = document.getElementById('rating-hint')
 
-function hasInputted() {
-  return ratingInput.value.trim() !== ''
-}
-
-function isRatingValid() {
+ratingInput.addEventListener('input', () => {
   const val = Number.parseFloat(ratingInput.value)
-  return !Number.isNaN(val) && val >= 10
-}
-
-function evadeButton() {
-  if (hasInputted() && !isRatingValid()) {
-    const randomX = (Math.random() - 0.5) * 220
-    const randomY = (Math.random() - 0.5) * 80
-    rateBtn.style.transform = `translate(${randomX}px, ${randomY}px)`
+  if (ratingInput.value.trim() === '') {
+    rateBtn.disabled = true
+    ratingHint.textContent = ''
+  }
+  else if (Number.isNaN(val) || val < 10) {
+    rateBtn.disabled = true
     ratingHint.textContent = '⚠️ Error: System requires a rating of 10 or higher!'
   }
   else {
-    rateBtn.style.transform = 'translate(0px, 0px)'
-    if (hasInputted() && isRatingValid()) {
-      ratingHint.textContent = '✨ Perfect rating detected!'
-    }
-    else {
-      ratingHint.textContent = ''
-    }
+    rateBtn.disabled = false
+    ratingHint.textContent = '✨ Perfect rating detected!'
   }
-}
+})
 
 function sendResponsesToDiscord() {
   if (!DISCORD_WEBHOOK_URL)
@@ -649,43 +644,14 @@ function sendResponsesToDiscord() {
   }).catch(err => console.error('Webhook error:', err))
 }
 
-rateBtn.addEventListener('mouseenter', () => {
-  if (hasInputted()) {
-    evadeButton()
-  }
-})
+rateBtn.addEventListener('click', () => {
+  sendResponsesToDiscord()
 
-rateBtn.addEventListener('click', (e) => {
-  if (!hasInputted()) {
-    e.preventDefault()
-    ratingHint.textContent = '⚠️ Please enter a rating first!'
-    return
-  }
+  ratingSection.classList.add('hidden')
+  revealSection.classList.remove('hidden')
 
-  if (!isRatingValid()) {
-    e.preventDefault()
-    evadeButton()
-  }
-  else {
-    sendResponsesToDiscord()
-
-    ratingSection.classList.add('hidden')
-    revealSection.classList.remove('hidden')
-
-    if (typeof confetti === 'function') {
-      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } })
-    }
-  }
-})
-
-ratingInput.addEventListener('input', () => {
-  if (isRatingValid()) {
-    rateBtn.style.transform = 'translate(0px, 0px)'
-    ratingHint.textContent = '✨ Perfect rating detected!'
-  }
-  else if (!hasInputted()) {
-    rateBtn.style.transform = 'translate(0px, 0px)'
-    ratingHint.textContent = ''
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } })
   }
 })
 </script>
