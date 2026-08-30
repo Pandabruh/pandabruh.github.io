@@ -258,7 +258,7 @@ The press-fit design came with multiple issues. Mainly it required trial and err
 
   <div style="flex: 1; min-width: 300px; text-align: center;">
     <img src="/droneold.png" alt="wrong connection" style="width: 100%; height: 100;" />
-    <span style="font-family: 'Times New Roman', serif;">Drone v2</span>
+    <span style="font-family: 'Times New Roman', serif;">Drone V1a</span>
   </div>
 </div>
 
@@ -277,6 +277,12 @@ To be frank, I would consider the result a partial failure. While I initially fe
 ## Rebirth
 
 In hindsight, I probably should have done some calculations before buying the parts. Sounds stupid I know. So this time I actually did what I was supposed to. The calculations can be found [here](/nerdstuff/droneupgrade).
+
+Two components were changed:
+
+Motor
+
+Propeller
 
 <div id="cost-breakdown">
 
