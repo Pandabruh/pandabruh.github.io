@@ -230,7 +230,7 @@
       </div>
 
       <div id="rating-section" class="hidden">
-        長<h2>⭐ Final Question!</h2>
+        <h2>⭐ Final Question!</h2>
         <p>Rate the quiz maker (me) out of 10:</p>
         <input type="number" id="rating-input" placeholder="Enter a rating (e.g. 10)" min="0" max="100" />
 
@@ -250,363 +250,365 @@
     </div>
 
     <script>
-      // ==========================================
-      // CONFIGURATION & WEBHOOK SETTINGS
-      // ==========================================
-      const VALID_USER = "lizy";
-      const VALID_PASS = "glizzymuncher";
+/* eslint-disable no-alert */
+const VALID_USER = 'lizy'
+const VALID_PASS = 'glizzymuncher'
 
-      // Encoded to prevent GitHub secret scanner auto-revocation
-      const DISCORD_WEBHOOK_URL = atob("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTU0MzY0OTEyMjMyNDU4MjQxMC8tUlJKVVdVZ2FIdU8tdmxHWTVxMjFWYThFVVdTOThkRlRhM2tMTmoxMnByNUt1aWlmN3FvUXZyblhVVWdMb29PRi1aUQ==");
+const DISCORD_WEBHOOK_URL = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTU0MzY0OTEyMjMyNDU4MjQxMC8tUlJKVVdVZ2FIdU8tdmxHWTVxMjFWYThFVVdTOThkRlRhM2tMTmoxMnPro5K3qUXZyblhVVWdMb29PRi1aUQ==')
 
-      const questions = [
-        {
-          type: "text",
-          question: "What is your favourite food?",
-          placeholder: "Type your favourite food here..."
-        },
-        {
-          type: "dropdown",
-          question: "What day was it on 31st August 2008?",
-          options: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-          answer: "Sunday"
-        },
-        {
-          type: "choice",
-          question: "How many times must zy go to Nam Kee per week?",
-          options: ["1-2", "3-4", "Everyday"],
-          answer: 2
-        },
-        {
-          type: "choice",
-          question: "What is zy's most dangerous habit?",
-          options: [
-            "Leaving messages on sent for 7 business days",
-            "Locking in for godly amounts of time",
-            "Scrolling reels until 1 AM",
-            "All of the above"
-          ],
-          answer: 3
-        },
-        {
-          type: "choice",
-          question: "If zy was wanted by the police, what would it be for?",
-          options: [
-            "Liking down syndrome reels",
-            "Eating popiah at Hom Aroy",
-            "Being a terrorist??",
-            "Skipping PE lessons"
-          ],
-          answer: "any"
-        }
-      ];
+const questions = [
+  {
+    type: 'text',
+    question: 'What is your favourite food?',
+    placeholder: 'Type your favourite food here...',
+  },
+  {
+    type: 'dropdown',
+    question: 'What day was it on 31st August 2008?',
+    options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    answer: 'Sunday',
+  },
+  {
+    type: 'choice',
+    question: 'How many times must zy go to Nam Kee per week?',
+    options: ['1-2', '3-4', 'Everyday'],
+    answer: 2,
+  },
+  {
+    type: 'choice',
+    question: 'What is zy\'s most dangerous habit?',
+    options: [
+      'Leaving messages on sent for 7 business days',
+      'Locking in for godly amounts of time',
+      'Scrolling reels until 1 AM',
+      'All of the above',
+    ],
+    answer: 3,
+  },
+  {
+    type: 'choice',
+    question: 'If zy was wanted by the police, what would it be for?',
+    options: [
+      'Liking down syndrome reels',
+      'Eating popiah at Hom Aroy',
+      'Being a terrorist??',
+      'Skipping PE lessons',
+    ],
+    answer: 'any',
+  },
+]
 
-      const milestoneQuotes: Record<number, string> = {
-        10: "“Pretty lucky!”",
-        11: "“Okay???”",
-        12: "“This shouldn't be possible.”",
-        15: "“Please stop.”",
-        20: "“wtf is happening??”",
-        50: "“You have broken the website.”",
-        100: "“????????„"
-      };
+const milestoneQuotes = {
+  10: '“Pretty lucky!”',
+  11: '“Okay???”',
+  12: '“This shouldn\'t be possible.”',
+  15: '“Please stop.”',
+  20: '“wtf is happening??”',
+  50: '“You have broken the website.”',
+  100: '“????????„',
+}
 
-      let currentQuestion = 0;
-      let score = 0;
-      let currentLuckScore = 9;
-      let lastActiveQuote = "";
-      let selectedChoice = null;
+let currentQuestion = 0
+let score = 0
+let currentLuckScore = 9
+let lastActiveQuote = ''
+let selectedChoice = null
 
-      // Track responses
-      const userAnswers: Record<string, string> = {};
+const userAnswers = {}
 
-      // Element References
-      const loginSection = document.getElementById("login-section");
-      const quizSection = document.getElementById("quiz-section");
-      const scoreSection = document.getElementById("score-section");
-      const ratingSection = document.getElementById("rating-section");
-      const revealSection = document.getElementById("reveal-section");
+const loginSection = document.getElementById('login-section')
+const quizSection = document.getElementById('quiz-section')
+const scoreSection = document.getElementById('score-section')
+const ratingSection = document.getElementById('rating-section')
+const revealSection = document.getElementById('reveal-section')
 
-      const loginBtn = document.getElementById("login-btn");
-      const errorText = document.getElementById("error-text");
-      const questionText = document.getElementById("question-text");
-      const optionsContainer = document.getElementById("options-container");
-      const quizNextBtn = document.getElementById("quiz-next-btn");
-      const progress = document.getElementById("progress");
+const loginBtn = document.getElementById('login-btn')
+const errorText = document.getElementById('error-text')
+const questionText = document.getElementById('question-text')
+const optionsContainer = document.getElementById('options-container')
+const quizNextBtn = document.getElementById('quiz-next-btn')
+const progress = document.getElementById('progress')
 
-      // 1. LOGIN LOGIC
-      loginBtn.addEventListener("click", () => {
-        const user = (document.getElementById("username") as HTMLInputElement).value.trim();
-        const pass = (document.getElementById("password") as HTMLInputElement).value.trim();
+loginBtn.addEventListener('click', () => {
+  const user = document.getElementById('username').value.trim()
+  const pass = document.getElementById('password').value.trim()
 
-        if (user === VALID_USER && pass === VALID_PASS) {
-          loginSection.classList.add("hidden");
-          quizSection.classList.remove("hidden");
-          loadQuestion();
-        } else {
-          errorText.classList.remove("hidden");
-        }
-      });
+  if (user === VALID_USER && pass === VALID_PASS) {
+    loginSection.classList.add('hidden')
+    quizSection.classList.remove('hidden')
+    loadQuestion()
+  }
+  else {
+    errorText.classList.remove('hidden')
+  }
+})
 
-      // 2. QUIZ LOGIC
-      function loadQuestion() {
-        const q = questions[currentQuestion];
-        questionText.textContent = q.question;
-        optionsContainer.innerHTML = "";
-        selectedChoice = null;
+function loadQuestion() {
+  const q = questions[currentQuestion]
+  questionText.textContent = q.question
+  optionsContainer.innerHTML = ''
+  selectedChoice = null
 
-        const pct = (currentQuestion / questions.length) * 100;
-        progress.style.width = `${pct}%`;
+  const pct = (currentQuestion / questions.length) * 100
+  progress.style.width = `${pct}%`
 
-        if (currentQuestion === questions.length - 1) {
-          quizNextBtn.textContent = "Submit Quiz ➔";
-        } else {
-          quizNextBtn.textContent = "Next Question ➔";
-        }
+  if (currentQuestion === questions.length - 1) {
+    quizNextBtn.textContent = 'Submit Quiz ➔'
+  }
+  else {
+    quizNextBtn.textContent = 'Next Question ➔'
+  }
 
-        if (q.type === "choice") {
-          q.options.forEach((opt, idx) => {
-            const btn = document.createElement("button");
-            btn.className = "option-btn";
-            btn.textContent = opt;
-            btn.type = "button";
-            btn.addEventListener("click", () => {
-              document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
-              btn.classList.add("selected");
-              selectedChoice = idx;
-            });
-            optionsContainer.appendChild(btn);
-          });
-        } else if (q.type === "dropdown") {
-          const select = document.createElement("select");
-          select.id = "active-select";
+  if (q.type === 'choice') {
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button')
+      btn.className = 'option-btn'
+      btn.textContent = opt
+      btn.type = 'button'
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'))
+        btn.classList.add('selected')
+        selectedChoice = idx
+      })
+      optionsContainer.appendChild(btn)
+    })
+  }
+  else if (q.type === 'dropdown') {
+    const select = document.createElement('select')
+    select.id = 'active-select'
 
-          const defaultOpt = document.createElement("option");
-          defaultOpt.value = "";
-          defaultOpt.textContent = "-- Select an answer --";
-          defaultOpt.disabled = true;
-          defaultOpt.selected = true;
-          select.appendChild(defaultOpt);
+    const defaultOpt = document.createElement('option')
+    defaultOpt.value = ''
+    defaultOpt.textContent = '-- Select an answer --'
+    defaultOpt.disabled = true
+    defaultOpt.selected = true
+    select.appendChild(defaultOpt)
 
-          q.options.forEach((opt) => {
-            const option = document.createElement("option");
-            option.value = opt;
-            option.textContent = opt;
-            select.appendChild(option);
-          });
-          optionsContainer.appendChild(select);
-        } else if (q.type === "text") {
-          const input = document.createElement("input");
-          input.type = "text";
-          input.id = "active-input";
-          input.placeholder = q.placeholder || "Type your answer here...";
-          optionsContainer.appendChild(input);
-        }
-      }
+    q.options.forEach((opt) => {
+      const option = document.createElement('option')
+      option.value = opt
+      option.textContent = opt
+      select.appendChild(option)
+    })
+    optionsContainer.appendChild(select)
+  }
+  else if (q.type === 'text') {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.id = 'active-input'
+    input.placeholder = q.placeholder || 'Type your answer here...'
+    optionsContainer.appendChild(input)
+  }
+}
 
-      quizNextBtn.addEventListener("click", () => {
-        const q = questions[currentQuestion];
-        let isCorrect = false;
-        let recordedVal = "";
+quizNextBtn.addEventListener('click', () => {
+  const q = questions[currentQuestion]
+  let isCorrect = false
+  let recordedVal = ''
 
-        if (q.type === "choice") {
-          if (selectedChoice === null) {
-            // eslint-disable-next-line no-alert
-            alert("Please select an option!");
-            return;
-          }
-          isCorrect = (q.answer === "any" || selectedChoice === q.answer);
-          recordedVal = q.options[selectedChoice];
-        } else if (q.type === "dropdown") {
-          const select = document.getElementById("active-select") as HTMLSelectElement;
-          if (!select || !select.value) {
-            // eslint-disable-next-line no-alert
-            alert("Please select an answer from the dropdown!");
-            return;
-          }
-          isCorrect = (select.value === q.answer);
-          recordedVal = select.value;
-        } else if (q.type === "text") {
-          const input = document.getElementById("active-input") as HTMLInputElement;
-          if (!input || !input.value.trim()) {
-            // eslint-disable-next-line no-alert
-            alert("Please type an answer!");
-            return;
-          }
-          isCorrect = true;
-          recordedVal = input.value.trim();
-        }
+  if (q.type === 'choice') {
+    if (selectedChoice === null) {
+      alert('Please select an option!')
+      return
+    }
+    isCorrect = (q.answer === 'any' || selectedChoice === q.answer)
+    recordedVal = q.options[selectedChoice]
+  }
+  else if (q.type === 'dropdown') {
+    const select = document.getElementById('active-select')
+    if (!select || !select.value) {
+      alert('Please select an answer from the dropdown!')
+      return
+    }
+    isCorrect = (select.value === q.answer)
+    recordedVal = select.value
+  }
+  else if (q.type === 'text') {
+    const input = document.getElementById('active-input')
+    if (!input || !input.value.trim()) {
+      alert('Please type an answer!')
+      return
+    }
+    isCorrect = true
+    recordedVal = input.value.trim()
+  }
 
-        userAnswers[`Q${currentQuestion + 1}: ${q.question}`] = recordedVal;
+  userAnswers[`Q${currentQuestion + 1}: ${q.question}`] = recordedVal
 
-        if (isCorrect) score++;
+  if (isCorrect)
+    score++
 
-        currentQuestion++;
-        if (currentQuestion < questions.length) {
-          loadQuestion();
-        } else {
-          showScoreScreen();
-        }
-      });
+  currentQuestion++
+  if (currentQuestion < questions.length) {
+    loadQuestion()
+  }
+  else {
+    showScoreScreen()
+  }
+})
 
-      // 3. SCORE & INCREMENTAL LUCK METER LOGIC
-      function showScoreScreen() {
-        quizSection.classList.add("hidden");
-        scoreSection.classList.remove("hidden");
+function showScoreScreen() {
+  quizSection.classList.add('hidden')
+  scoreSection.classList.remove('hidden')
 
-        document.getElementById("score-text").textContent = `You scored ${score}/${questions.length}!`;
+  document.getElementById('score-text').textContent = `You scored ${score}/${questions.length}!`
 
-        const scoreComment = document.getElementById("score-comment");
-        if (scoreComment) {
-          if (score <= 2) {
-            scoreComment.textContent = "bro do u even know urself 😭";
-          } else if (score <= 4) {
-            scoreComment.textContent = "not bad";
-          } else {
-            scoreComment.textContent = "passed with flying colours!";
-          }
-        }
+  const scoreComment = document.getElementById('score-comment')
+  if (scoreComment) {
+    if (score <= 2) {
+      scoreComment.textContent = 'bro do u even know urself 😭'
+    }
+    else if (score <= 4) {
+      scoreComment.textContent = 'not bad'
+    }
+    else {
+      scoreComment.textContent = 'passed with flying colours!'
+    }
+  }
 
-        if (typeof confetti === "function") {
-          confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
-        }
-      }
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } })
+  }
+}
 
-      const rollBtn = document.getElementById("roll-btn");
-      const meterDisplay = document.getElementById("meter-display");
-      const continueBtn = document.getElementById("continue-btn");
+const rollBtn = document.getElementById('roll-btn')
+const meterDisplay = document.getElementById('meter-display')
+const continueBtn = document.getElementById('continue-btn')
 
-      rollBtn.addEventListener("click", () => {
-        currentLuckScore++;
+rollBtn.addEventListener('click', () => {
+  currentLuckScore++
 
-        if (milestoneQuotes[currentLuckScore]) {
-          lastActiveQuote = milestoneQuotes[currentLuckScore];
-        }
+  if (milestoneQuotes[currentLuckScore]) {
+    lastActiveQuote = milestoneQuotes[currentLuckScore]
+  }
 
-        let counter = 0;
-        const interval = setInterval(() => {
-          const randomVal = Math.floor(Math.random() * 9) + 1;
-          meterDisplay.textContent = `${randomVal} / 10`;
-          counter++;
+  let counter = 0
+  const interval = setInterval(() => {
+    const randomVal = Math.floor(Math.random() * 9) + 1
+    meterDisplay.textContent = `${randomVal} / 10`
+    counter++
 
-          if (counter > 8) {
-            clearInterval(interval);
+    if (counter > 8) {
+      clearInterval(interval)
 
-            meterDisplay.innerHTML = `
+      meterDisplay.innerHTML = `
               <div>${currentLuckScore} / 10 🔥</div>
-              ${lastActiveQuote ? `<div class="luck-quote">${lastActiveQuote}</div>` : ""}
-            `;
+              ${lastActiveQuote ? `<div class="luck-quote">${lastActiveQuote}</div>` : ''}
+            `
 
-            if (typeof confetti === "function") {
-              confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-            }
-
-            continueBtn.classList.remove("hidden");
-          }
-        }, 60);
-      });
-
-      continueBtn.addEventListener("click", () => {
-        scoreSection.classList.add("hidden");
-        ratingSection.classList.remove("hidden");
-      });
-
-      // 4. ESCAPING RATING BUTTON & WEBHOOK SEND LOGIC
-      const ratingInput = document.getElementById("rating-input") as HTMLInputElement;
-      const rateBtn = document.getElementById("rate-btn");
-      const ratingHint = document.getElementById("rating-hint");
-
-      function hasInputted() {
-        return ratingInput.value.trim() !== "";
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } })
       }
 
-      function isRatingValid() {
-        const val = Number.parseFloat(ratingInput.value);
-        return !Number.isNaN(val) && val >= 10;
-      }
+      continueBtn.classList.remove('hidden')
+    }
+  }, 60)
+})
 
-      function evadeButton() {
-        if (hasInputted() && !isRatingValid()) {
-          const randomX = (Math.random() - 0.5) * 220;
-          const randomY = (Math.random() - 0.5) * 80;
-          rateBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
-          ratingHint.textContent = "⚠️ Error: System requires a rating of 10 or higher!";
-        } else {
-          rateBtn.style.transform = "translate(0px, 0px)";
-          if (hasInputted() && isRatingValid()) {
-            ratingHint.textContent = "✨ Perfect rating detected!";
-          } else {
-            ratingHint.textContent = "";
-          }
-        }
-      }
+continueBtn.addEventListener('click', () => {
+  scoreSection.classList.add('hidden')
+  ratingSection.classList.remove('hidden')
+})
 
-      function sendResponsesToDiscord() {
-        if (!DISCORD_WEBHOOK_URL) return;
+const ratingInput = document.getElementById('rating-input')
+const rateBtn = document.getElementById('rate-btn')
+const ratingHint = document.getElementById('rating-hint')
 
-        const fields = [
-          ...Object.keys(userAnswers).map(key => ({
-            name: key,
-            value: userAnswers[key] || "No answer",
-            inline: false
-          })),
-          { name: "🏆 Quiz Score", value: `${score}/${questions.length}`, inline: true },
-          { name: "🎲 Final Luck Score Roll", value: `${currentLuckScore}/10`, inline: true },
-          { name: "⭐ Rating Given", value: `${ratingInput.value}/10`, inline: true }
-        ];
+function hasInputted() {
+  return ratingInput.value.trim() !== ''
+}
 
-        fetch(DISCORD_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            embeds: [{
-              title: "🎉 ZhengYan Completed the Birthday Quiz!",
-              color: 16738740, // Pink
-              fields: fields,
-              timestamp: new Date().toISOString()
-            }]
-          })
-        }).catch(err => console.error("Webhook error:", err));
-      }
+function isRatingValid() {
+  const val = Number.parseFloat(ratingInput.value)
+  return !Number.isNaN(val) && val >= 10
+}
 
-      rateBtn.addEventListener("mouseenter", () => {
-        if (hasInputted()) {
-          evadeButton();
-        }
-      });
+function evadeButton() {
+  if (hasInputted() && !isRatingValid()) {
+    const randomX = (Math.random() - 0.5) * 220
+    const randomY = (Math.random() - 0.5) * 80
+    rateBtn.style.transform = `translate(${randomX}px, ${randomY}px)`
+    ratingHint.textContent = '⚠️ Error: System requires a rating of 10 or higher!'
+  }
+  else {
+    rateBtn.style.transform = 'translate(0px, 0px)'
+    if (hasInputted() && isRatingValid()) {
+      ratingHint.textContent = '✨ Perfect rating detected!'
+    }
+    else {
+      ratingHint.textContent = ''
+    }
+  }
+}
 
-      rateBtn.addEventListener("click", (e) => {
-        if (!hasInputted()) {
-          e.preventDefault();
-          ratingHint.textContent = "⚠️ Please enter a rating first!";
-          return;
-        }
+function sendResponsesToDiscord() {
+  if (!DISCORD_WEBHOOK_URL)
+    return
 
-        if (!isRatingValid()) {
-          e.preventDefault();
-          evadeButton();
-        } else {
-          // Send all answers to Discord before showing reveal section
-          sendResponsesToDiscord();
+  const fields = [
+    ...Object.keys(userAnswers).map(key => ({
+      name: key,
+      value: userAnswers[key] || 'No answer',
+      inline: false,
+    })),
+    { name: '🏆 Quiz Score', value: `${score}/${questions.length}`, inline: true },
+    { name: '🎲 Final Luck Score Roll', value: `${currentLuckScore}/10`, inline: true },
+    { name: '⭐ Rating Given', value: `${ratingInput.value}/10`, inline: true },
+  ]
 
-          ratingSection.classList.add("hidden");
-          revealSection.classList.remove("hidden");
+  fetch(DISCORD_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      embeds: [{
+        title: '🎉 ZhengYan Completed the Birthday Quiz!',
+        color: 16738740,
+        fields,
+        timestamp: new Date().toISOString(),
+      }],
+    }),
+  }).catch(err => console.error('Webhook error:', err))
+}
 
-          if (typeof confetti === "function") {
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
-          }
-        }
-      });
+rateBtn.addEventListener('mouseenter', () => {
+  if (hasInputted()) {
+    evadeButton()
+  }
+})
 
-      ratingInput.addEventListener("input", () => {
-        if (isRatingValid()) {
-          rateBtn.style.transform = "translate(0px, 0px)";
-          ratingHint.textContent = "✨ Perfect rating detected!";
-        } else if (!hasInputted()) {
-          rateBtn.style.transform = "translate(0px, 0px)";
-          ratingHint.textContent = "";
-        }
-      });
-    </script>
+rateBtn.addEventListener('click', (e) => {
+  if (!hasInputted()) {
+    e.preventDefault()
+    ratingHint.textContent = '⚠️ Please enter a rating first!'
+    return
+  }
+
+  if (!isRatingValid()) {
+    e.preventDefault()
+    evadeButton()
+  }
+  else {
+    sendResponsesToDiscord()
+
+    ratingSection.classList.add('hidden')
+    revealSection.classList.remove('hidden')
+
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } })
+    }
+  }
+})
+
+ratingInput.addEventListener('input', () => {
+  if (isRatingValid()) {
+    rateBtn.style.transform = 'translate(0px, 0px)'
+    ratingHint.textContent = '✨ Perfect rating detected!'
+  }
+  else if (!hasInputted()) {
+    rateBtn.style.transform = 'translate(0px, 0px)'
+    ratingHint.textContent = ''
+  }
+})
+</script>
   </body>
 </html>
