@@ -95,6 +95,21 @@
         background-color: var(--primary-hover);
       }
 
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .secondary-btn {
+        background-color: #ffd1dc;
+        color: var(--text);
+      }
+
+      .secondary-btn:hover {
+        background-color: #ffb6c1;
+      }
+
       #options-container {
         display: flex;
         flex-direction: column;
@@ -208,7 +223,10 @@
         </div>
         <h2 id="question-text">Question goes here</h2>
         <div id="options-container"></div>
-        <button id="quiz-next-btn">Next Question ➔</button>
+        <div class="btn-group">
+          <button id="quiz-back-btn" class="secondary-btn hidden" type="button">↩ Back</button>
+          <button id="quiz-next-btn" type="button">Next Question ➔</button>
+        </div>
       </div>
 
       <div id="score-section" class="hidden">
@@ -238,13 +256,14 @@
           <button id="rate-btn">Submit Rating</button>
         </div>
         <p id="rating-hint" style="font-size: 13px; color: #888; margin-top: 10px;"></p>
+        <button id="rating-back-btn" class="secondary-btn" style="margin-top: 10px;">↩ Back</button>
       </div>
 
       <div id="reveal-section" class="hidden">
         <h1>🎉 Happy Birthday ZhengYan! 🎉</h1>
         <div style="margin-top: 20px; padding: 20px; background-color: #fff0f5; border-radius: 16px; text-align: left;">
           <p>You unlocked legendary luck and I hope u gave me a good rating boi 😂</p>
-          <p>Happy flippin womb eviction day mate, hope u have a damn good day!</p>
+          <p>Happy flippin womb eviction day mate, hope u have an elite day!</p>
         </div>
       </div>
     </div>
@@ -254,7 +273,13 @@
 const VALID_USER = 'lizy'
 const VALID_PASS = 'glizzymuncher'
 
-const DISCORD_WEBHOOK_URL = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTU0MzY0OTEyMjMyNDU4MjQxMC8tUlJKVVdVZ2FIdU8tdmxHWTVxMjFWYThFVVdTOThkRlRhM2tMTmoxMnPro5K3qUXZyblhVVWdMb29PRi1aUQ==')
+let DISCORD_WEBHOOK_URL = ''
+try {
+  DISCORD_WEBHOOK_URL = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTU0MzY0OTEyMjMyNDU4MjQxMC8tUlJKVVdVZ2FIdU8tdmxHWTVxMjFWYThFVVdTOThkRlRhM2tMTmoxMnByNUt1aWlmN3FvUXZyblhVVWdMb29PRi1aUQ==')
+}
+catch (err) {
+  console.error('Webhook decoding error:', err)
+}
 
 const questions = [
   {
@@ -314,7 +339,7 @@ let currentLuckScore = 9
 let lastActiveQuote = ''
 let selectedChoice = null
 
-const userAnswers = {}
+const savedAnswers = {}
 
 const loginSection = document.getElementById('login-section')
 const quizSection = document.getElementById('quiz-section')
@@ -327,19 +352,27 @@ const errorText = document.getElementById('error-text')
 const questionText = document.getElementById('question-text')
 const optionsContainer = document.getElementById('options-container')
 const quizNextBtn = document.getElementById('quiz-next-btn')
+const quizBackBtn = document.getElementById('quiz-back-btn')
+const ratingBackBtn = document.getElementById('rating-back-btn')
 const progress = document.getElementById('progress')
 
 loginBtn.addEventListener('click', () => {
-  const user = document.getElementById('username').value.trim()
-  const pass = document.getElementById('password').value.trim()
+  const user = document.getElementById('username').value.trim().toLowerCase()
+  const pass = document.getElementById('password').value.trim().toLowerCase()
 
-  if (user === VALID_USER && pass === VALID_PASS) {
+  if (user !== VALID_USER) {
+    errorText.textContent = 'Incorrect username!'
+    errorText.classList.remove('hidden')
+  }
+  else if (pass !== VALID_PASS) {
+    errorText.textContent = 'Incorrect password!'
+    errorText.classList.remove('hidden')
+  }
+  else {
+    errorText.classList.add('hidden')
     loginSection.classList.add('hidden')
     quizSection.classList.remove('hidden')
     loadQuestion()
-  }
-  else {
-    errorText.classList.remove('hidden')
   }
 })
 
@@ -352,6 +385,13 @@ function loadQuestion() {
   const pct = (currentQuestion / questions.length) * 100
   progress.style.width = `${pct}%`
 
+  if (currentQuestion > 0) {
+    quizBackBtn.classList.remove('hidden')
+  }
+  else {
+    quizBackBtn.classList.add('hidden')
+  }
+
   if (currentQuestion === questions.length - 1) {
     quizNextBtn.textContent = 'Submit Quiz ➔'
   }
@@ -359,12 +399,20 @@ function loadQuestion() {
     quizNextBtn.textContent = 'Next Question ➔'
   }
 
+  const prevAnswer = savedAnswers[currentQuestion]
+
   if (q.type === 'choice') {
     q.options.forEach((opt, idx) => {
       const btn = document.createElement('button')
       btn.className = 'option-btn'
       btn.textContent = opt
       btn.type = 'button'
+
+      if (prevAnswer === opt) {
+        btn.classList.add('selected')
+        selectedChoice = idx
+      }
+
       btn.addEventListener('click', () => {
         document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'))
         btn.classList.add('selected')
@@ -381,13 +429,16 @@ function loadQuestion() {
     defaultOpt.value = ''
     defaultOpt.textContent = '-- Select an answer --'
     defaultOpt.disabled = true
-    defaultOpt.selected = true
+    if (!prevAnswer)
+      defaultOpt.selected = true
     select.appendChild(defaultOpt)
 
     q.options.forEach((opt) => {
       const option = document.createElement('option')
       option.value = opt
       option.textContent = opt
+      if (prevAnswer === opt)
+        option.selected = true
       select.appendChild(option)
     })
     optionsContainer.appendChild(select)
@@ -397,13 +448,26 @@ function loadQuestion() {
     input.type = 'text'
     input.id = 'active-input'
     input.placeholder = q.placeholder || 'Type your answer here...'
+    if (prevAnswer)
+      input.value = prevAnswer
     optionsContainer.appendChild(input)
   }
 }
 
+quizBackBtn.addEventListener('click', () => {
+  if (currentQuestion > 0) {
+    currentQuestion--
+    loadQuestion()
+  }
+})
+
+ratingBackBtn.addEventListener('click', () => {
+  ratingSection.classList.add('hidden')
+  scoreSection.classList.remove('hidden')
+})
+
 quizNextBtn.addEventListener('click', () => {
   const q = questions[currentQuestion]
-  let isCorrect = false
   let recordedVal = ''
 
   if (q.type === 'choice') {
@@ -411,7 +475,6 @@ quizNextBtn.addEventListener('click', () => {
       alert('Please select an option!')
       return
     }
-    isCorrect = (q.answer === 'any' || selectedChoice === q.answer)
     recordedVal = q.options[selectedChoice]
   }
   else if (q.type === 'dropdown') {
@@ -420,7 +483,6 @@ quizNextBtn.addEventListener('click', () => {
       alert('Please select an answer from the dropdown!')
       return
     }
-    isCorrect = (select.value === q.answer)
     recordedVal = select.value
   }
   else if (q.type === 'text') {
@@ -429,23 +491,40 @@ quizNextBtn.addEventListener('click', () => {
       alert('Please type an answer!')
       return
     }
-    isCorrect = true
     recordedVal = input.value.trim()
   }
 
-  userAnswers[`Q${currentQuestion + 1}: ${q.question}`] = recordedVal
-
-  if (isCorrect)
-    score++
+  savedAnswers[currentQuestion] = recordedVal
 
   currentQuestion++
   if (currentQuestion < questions.length) {
     loadQuestion()
   }
   else {
+    calculateScore()
     showScoreScreen()
   }
 })
+
+function calculateScore() {
+  score = 0
+  questions.forEach((q, idx) => {
+    const val = savedAnswers[idx]
+    if (q.type === 'choice') {
+      const choiceIdx = q.options.indexOf(val)
+      if (q.answer === 'any' || choiceIdx === q.answer)
+        score++
+    }
+    else if (q.type === 'dropdown') {
+      if (val === q.answer)
+        score++
+    }
+    else if (q.type === 'text') {
+      if (val && val.trim() !== '')
+        score++
+    }
+  })
+}
 
 function showScoreScreen() {
   quizSection.classList.add('hidden')
@@ -546,9 +625,9 @@ function sendResponsesToDiscord() {
     return
 
   const fields = [
-    ...Object.keys(userAnswers).map(key => ({
-      name: key,
-      value: userAnswers[key] || 'No answer',
+    ...questions.map((q, idx) => ({
+      name: `Q${idx + 1}: ${q.question}`,
+      value: savedAnswers[idx] || 'No answer',
       inline: false,
     })),
     { name: '🏆 Quiz Score', value: `${score}/${questions.length}`, inline: true },
